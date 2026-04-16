@@ -245,14 +245,14 @@ export default function AdminProductsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Products</h2>
-          <p className="text-sm text-gray-500">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Products</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
             {total} total product{total !== 1 ? "s" : ""}
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-chocolate text-white rounded-xl text-sm font-medium hover:bg-chocolate/90 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#3B82F6] text-white rounded-xl text-sm font-medium hover:bg-[#2563EB] transition-colors shadow-lg shadow-[#3B82F6]/25"
         >
           <Plus className="h-4 w-4" /> Add Product
         </button>
@@ -269,12 +269,12 @@ export default function AdminProductsPage() {
             setSearch(e.target.value);
             setPage(1);
           }}
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:border-chocolate transition-colors"
+          className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.06] rounded-xl text-sm outline-none focus:border-[#3B82F6] dark:focus:border-[#3B82F6] transition-colors dark:text-white dark:placeholder:text-gray-500"
         />
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-gray-400 animate-pulse">
             Loading products...
@@ -287,26 +287,26 @@ export default function AdminProductsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50/80 border-b border-gray-100">
-                  <th className="text-left py-3 px-4 font-medium text-gray-500">
+                <tr className="bg-gray-50/80 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/[0.06]">
+                  <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Product
                   </th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-500">
+                  <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     SKU
                   </th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-500">
+                  <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Category
                   </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-500">
+                  <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Price
                   </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-500">
+                  <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Stock
                   </th>
-                  <th className="text-center py-3 px-4 font-medium text-gray-500">
+                  <th className="text-center py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Status
                   </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-500">
+                  <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Actions
                   </th>
                 </tr>
@@ -315,11 +315,11 @@ export default function AdminProductsPage() {
                 {products.map((p) => (
                   <tr
                     key={p.id}
-                    className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
+                    className="border-b border-gray-50 dark:border-white/[0.04] hover:bg-gray-50/50 dark:hover:bg-white/[0.03] transition-colors"
                   >
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden shrink-0 relative">
+                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/[0.05] overflow-hidden shrink-0 relative">
                           {p.images?.[0] ? (
                             <Image
                               src={p.images[0].image_url}
@@ -335,20 +335,20 @@ export default function AdminProductsPage() {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-medium text-gray-900 truncate max-w-[200px]">
+                          <p className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]">
                             {p.name}
                           </p>
                           <p className="text-xs text-gray-400">{p.brand}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="py-3 px-4 text-gray-500 font-mono text-xs">
+                    <td className="py-3 px-4 text-gray-500 dark:text-gray-400 font-mono text-xs">
                       {p.sku}
                     </td>
-                    <td className="py-3 px-4 text-gray-600">
+                    <td className="py-3 px-4 text-gray-600 dark:text-gray-400">
                       {p.category?.name || "â€”"}
                     </td>
-                    <td className="py-3 px-4 text-right font-semibold text-gray-900">
+                    <td className="py-3 px-4 text-right font-semibold text-gray-900 dark:text-white">
                       ${parseFloat(p.retail_price).toFixed(2)}
                     </td>
                     <td className="py-3 px-4 text-right">
@@ -378,13 +378,13 @@ export default function AdminProductsPage() {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => openEdit(p)}
-                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
                         >
                           <Edit2 className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => setDeleting(p.id)}
-                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -399,22 +399,22 @@ export default function AdminProductsPage() {
 
         {/* Pagination */}
         {lastPage > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-            <p className="text-sm text-gray-500">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100 dark:border-white/[0.06]">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Page {page} of {lastPage}
             </p>
             <div className="flex gap-1">
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page <= 1}
-                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed dark:text-gray-400"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setPage(Math.min(lastPage, page + 1))}
                 disabled={page >= lastPage}
-                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed dark:text-gray-400"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -426,18 +426,18 @@ export default function AdminProductsPage() {
       {/* Delete Confirmation */}
       {deleting !== null && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="bg-white dark:bg-[#0F1219] rounded-2xl p-6 max-w-sm w-full shadow-xl dark:border dark:border-white/[0.06]">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               Delete Product?
             </h3>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
               This action cannot be undone. The product and all its images will
               be permanently removed.
             </p>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setDeleting(null)}
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.06] rounded-xl transition-colors"
               >
                 Cancel
               </button>
@@ -455,15 +455,15 @@ export default function AdminProductsPage() {
       {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-start justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-xl my-8">
+          <div className="bg-white dark:bg-[#0F1219] rounded-2xl w-full max-w-2xl shadow-xl my-8 dark:border dark:border-white/[0.06]">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/[0.06]">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {editing ? "Edit Product" : "New Product"}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/[0.06] rounded-lg"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -474,7 +474,7 @@ export default function AdminProductsPage() {
               {/* Name + SKU */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Name *
                   </label>
                   <input
@@ -483,12 +483,12 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setForm({ ...form, name: e.target.value })
                     }
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-chocolate"
+                    className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     SKU *
                   </label>
                   <input
@@ -497,7 +497,7 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setForm({ ...form, sku: e.target.value })
                     }
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-chocolate"
+                    className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                     required
                   />
                 </div>
@@ -506,7 +506,7 @@ export default function AdminProductsPage() {
               {/* Category + Brand */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Category *
                   </label>
                   <select
@@ -514,7 +514,7 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setForm({ ...form, category_id: e.target.value })
                     }
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-chocolate bg-white"
+                    className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#3B82F6] bg-white dark:bg-transparent dark:text-white"
                     required
                   >
                     <option value="">Select Category</option>
@@ -526,7 +526,7 @@ export default function AdminProductsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Brand
                   </label>
                   <input
@@ -535,14 +535,14 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setForm({ ...form, brand: e.target.value })
                     }
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-chocolate"
+                    className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                   />
                 </div>
               </div>
 
               {/* Prices */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Pricing
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -555,7 +555,7 @@ export default function AdminProductsPage() {
                     ] as const
                   ).map(([key, label]) => (
                     <div key={key}>
-                      <label className="block text-xs text-gray-500 mb-1">
+                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
                         {label}
                       </label>
                       <input
@@ -565,7 +565,7 @@ export default function AdminProductsPage() {
                         onChange={(e) =>
                           setForm({ ...form, [key]: e.target.value })
                         }
-                        className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-chocolate"
+                        className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                         required
                       />
                     </div>
@@ -576,7 +576,7 @@ export default function AdminProductsPage() {
               {/* Stock, MOQ, Unit, Weight */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
                     Stock *
                   </label>
                   <input
@@ -585,12 +585,12 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setForm({ ...form, stock: e.target.value })
                     }
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-chocolate"
+                    className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
                     MOQ *
                   </label>
                   <input
@@ -599,12 +599,12 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setForm({ ...form, moq: e.target.value })
                     }
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-chocolate"
+                    className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
                     Unit *
                   </label>
                   <input
@@ -613,12 +613,12 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setForm({ ...form, unit: e.target.value })
                     }
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-chocolate"
+                    className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
                     Weight (kg)
                   </label>
                   <input
@@ -628,14 +628,14 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setForm({ ...form, weight: e.target.value })
                     }
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-chocolate"
+                    className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                   />
                 </div>
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Description
                 </label>
                 <textarea
@@ -644,20 +644,20 @@ export default function AdminProductsPage() {
                   onChange={(e) =>
                     setForm({ ...form, description: e.target.value })
                   }
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-chocolate resize-none"
+                  className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#3B82F6] dark:text-white resize-none"
                 />
               </div>
 
               {/* Images */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Images
                 </label>
                 <div className="flex flex-wrap gap-3">
                   {form.images.map((img, idx) => (
                     <div
                       key={idx}
-                      className="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-200 group"
+                      className="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-200 dark:border-white/[0.06] group"
                     >
                       <Image
                         src={img.image_url}
@@ -675,9 +675,9 @@ export default function AdminProductsPage() {
                       </button>
                     </div>
                   ))}
-                  <label className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-chocolate hover:bg-cream/50 transition-colors">
+                  <label className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/[0.1] flex flex-col items-center justify-center cursor-pointer hover:border-[#3B82F6] hover:bg-[#3B82F6]/5 transition-colors">
                     {uploading ? (
-                      <div className="w-5 h-5 border-2 border-chocolate border-t-transparent rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-[#3B82F6] border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
                         <Upload className="h-5 w-5 text-gray-400" />
@@ -706,7 +706,7 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setForm({ ...form, is_active: e.target.checked })
                     }
-                    className="rounded border-gray-300 text-chocolate focus:ring-chocolate"
+                    className="rounded border-gray-300 dark:border-white/[0.1] text-[#3B82F6] focus:ring-[#3B82F6]"
                   />
                   Active
                 </label>
@@ -717,7 +717,7 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setForm({ ...form, is_featured: e.target.checked })
                     }
-                    className="rounded border-gray-300 text-chocolate focus:ring-chocolate"
+                    className="rounded border-gray-300 dark:border-white/[0.1] text-[#3B82F6] focus:ring-[#3B82F6]"
                   />
                   Featured
                 </label>
@@ -728,14 +728,14 @@ export default function AdminProductsPage() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="px-5 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.06] rounded-xl transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2.5 text-sm font-medium bg-chocolate text-white rounded-xl hover:bg-chocolate/90 transition-colors disabled:opacity-50"
+                  className="px-5 py-2.5 text-sm font-medium bg-[#3B82F6] text-white rounded-xl hover:bg-[#2563EB] transition-colors disabled:opacity-50"
                 >
                   {saving ? "Saving..." : editing ? "Update" : "Create"}
                 </button>

@@ -95,8 +95,8 @@ export default function AdminOrdersPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-gray-900">Orders</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Orders</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           {total} total order{total !== 1 ? "s" : ""}
         </p>
       </div>
@@ -113,7 +113,7 @@ export default function AdminOrdersPage() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:border-chocolate transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.06] rounded-xl text-sm outline-none focus:border-[#3B82F6] dark:focus:border-[#3B82F6] transition-colors dark:text-white dark:placeholder:text-gray-500"
           />
         </div>
         <div className="flex gap-1.5 flex-wrap">
@@ -124,8 +124,8 @@ export default function AdminOrdersPage() {
             }}
             className={`px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
               !statusFilter
-                ? "bg-chocolate text-white"
-                : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                ? "bg-[#3B82F6] text-white shadow-sm"
+                : "bg-white dark:bg-white/[0.03] text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/[0.06] hover:bg-gray-50 dark:hover:bg-white/[0.06]"
             }`}
           >
             All
@@ -141,8 +141,8 @@ export default function AdminOrdersPage() {
                 }}
                 className={`px-3 py-2 rounded-xl text-xs font-medium transition-colors capitalize ${
                   statusFilter === s
-                    ? "bg-chocolate text-white"
-                    : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                    ? "bg-[#3B82F6] text-white shadow-sm"
+                    : "bg-white dark:bg-white/[0.03] text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/[0.06] hover:bg-gray-50 dark:hover:bg-white/[0.06]"
                 }`}
               >
                 {cfg.label}
@@ -153,7 +153,7 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-gray-400 animate-pulse">
             Loading orders...
@@ -164,23 +164,23 @@ export default function AdminOrdersPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50/80 border-b border-gray-100">
-                  <th className="text-left py-3 px-4 font-medium text-gray-500">
+                <tr className="bg-gray-50/80 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/[0.06]">
+                  <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Order #
                   </th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-500">
+                  <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Customer
                   </th>
-                  <th className="text-right py-3 px-4 font-medium text-gray-500">
+                  <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Total
                   </th>
-                  <th className="text-center py-3 px-4 font-medium text-gray-500">
+                  <th className="text-center py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Status
                   </th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-500">
+                  <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Date
                   </th>
-                  <th className="text-center py-3 px-4 font-medium text-gray-500">
+                  <th className="text-center py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                     Action
                   </th>
                 </tr>
@@ -191,22 +191,22 @@ export default function AdminOrdersPage() {
                   return (
                     <tr
                       key={o.id}
-                      className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
+                      className="border-b border-gray-50 dark:border-white/[0.04] hover:bg-gray-50/50 dark:hover:bg-white/[0.03] transition-colors"
                     >
-                      <td className="py-3 px-4 font-semibold text-gray-900">
+                      <td className="py-3 px-4 font-semibold text-gray-900 dark:text-white">
                         #{o.id}
                       </td>
                       <td className="py-3 px-4">
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-gray-900 dark:text-white">
                             {o.user?.name || "Guest"}
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-gray-400 dark:text-gray-500">
                             {o.user?.email}
                           </p>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-right font-semibold text-gray-900">
+                      <td className="py-3 px-4 text-right font-semibold text-gray-900 dark:text-white">
                         ${parseFloat(o.total).toFixed(2)}
                       </td>
                       <td className="py-3 px-4 text-center">
@@ -217,13 +217,13 @@ export default function AdminOrdersPage() {
                           {o.status}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-gray-500">
+                      <td className="py-3 px-4 text-gray-500 dark:text-gray-400">
                         {new Date(o.created_at).toLocaleDateString()}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <button
                           onClick={() => setSelected(o)}
-                          className="text-sm text-chocolate font-medium hover:underline"
+                          className="text-sm text-[#3B82F6] font-medium hover:underline"
                         >
                           Details
                         </button>
@@ -237,22 +237,22 @@ export default function AdminOrdersPage() {
         )}
 
         {lastPage > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-            <p className="text-sm text-gray-500">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100 dark:border-white/[0.06]">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Page {page} of {lastPage}
             </p>
             <div className="flex gap-1">
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page <= 1}
-                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-30"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.06] disabled:opacity-30 dark:text-gray-400"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setPage(Math.min(lastPage, page + 1))}
                 disabled={page >= lastPage}
-                className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-30"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.06] disabled:opacity-30 dark:text-gray-400"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -264,14 +264,14 @@ export default function AdminOrdersPage() {
       {/* Order Detail Modal */}
       {selected && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900">
+          <div className="bg-white dark:bg-[#0F1219] rounded-2xl w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto dark:border dark:border-white/[0.06]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/[0.06]">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Order #{selected.id}
               </h3>
               <button
                 onClick={() => setSelected(null)}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/[0.06] rounded-lg"
               >
                 <XCircle className="h-5 w-5" />
               </button>
@@ -279,17 +279,17 @@ export default function AdminOrdersPage() {
             <div className="p-6 space-y-5">
               {/* Customer */}
               <div>
-                <h4 className="text-sm font-medium text-gray-500 mb-1">
+                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
                   Customer
                 </h4>
-                <p className="font-medium text-gray-900">
+                <p className="font-medium text-gray-900 dark:text-white">
                   {selected.user?.name || "Guest"}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   {selected.user?.email}
                 </p>
                 {selected.user?.phone && (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     {selected.user.phone}
                   </p>
                 )}
@@ -298,17 +298,17 @@ export default function AdminOrdersPage() {
               {/* Items */}
               {selected.items && selected.items.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">
+                  <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
                     Items
                   </h4>
                   <div className="space-y-2">
                     {selected.items.map((item) => (
                       <div
                         key={item.id}
-                        className="flex justify-between items-center p-3 bg-gray-50 rounded-xl text-sm"
+                        className="flex justify-between items-center p-3 bg-gray-50 dark:bg-white/[0.03] rounded-xl text-sm"
                       >
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-gray-900 dark:text-white">
                             {item.product?.name || "Product"}
                           </p>
                           <p className="text-xs text-gray-400">
@@ -327,16 +327,16 @@ export default function AdminOrdersPage() {
               )}
 
               {/* Total */}
-              <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-                <span className="font-medium text-gray-500">Total</span>
-                <span className="text-xl font-bold text-gray-900">
+              <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-white/[0.06]">
+                <span className="font-medium text-gray-500 dark:text-gray-400">Total</span>
+                <span className="text-xl font-bold text-gray-900 dark:text-white">
                   ${parseFloat(selected.total).toFixed(2)}
                 </span>
               </div>
 
               {/* Status Update */}
               <div>
-                <h4 className="text-sm font-medium text-gray-500 mb-2">
+                <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
                   Update Status
                 </h4>
                 <div className="flex flex-wrap gap-2">
@@ -353,7 +353,7 @@ export default function AdminOrdersPage() {
                         className={`inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium capitalize transition-all ${
                           isActive
                             ? `${cfg.color} ring-2 ring-offset-1 ring-current`
-                            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                            : "bg-gray-100 dark:bg-white/[0.06] text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/[0.1]"
                         } disabled:cursor-not-allowed`}
                       >
                         <cfg.icon className="h-3 w-3" />

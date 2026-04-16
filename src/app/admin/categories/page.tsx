@@ -146,14 +146,14 @@ export default function AdminCategoriesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Categories</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Categories</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {categories.length} categor{categories.length !== 1 ? "ies" : "y"}
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-chocolate text-white rounded-xl text-sm font-medium hover:bg-chocolate/90 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#3B82F6] text-white rounded-xl text-sm font-medium hover:bg-[#3B82F6]/90 shadow-sm shadow-[#3B82F6]/20 transition-colors"
         >
           <Plus className="h-4 w-4" /> Add Category
         </button>
@@ -165,7 +165,7 @@ export default function AdminCategoriesPage() {
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="h-48 bg-white rounded-2xl border border-gray-100 animate-pulse"
+              className="h-48 bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] animate-pulse"
             />
           ))}
         </div>
@@ -178,9 +178,9 @@ export default function AdminCategoriesPage() {
           {categories.map((c) => (
             <div
               key={c.id}
-              className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group"
+              className="bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] overflow-hidden hover:shadow-md transition-shadow group"
             >
-              <div className="relative h-32 bg-gray-100">
+                <div className="relative h-32 bg-gray-100 dark:bg-white/[0.02]">
                 {c.image ? (
                   <Image
                     src={c.image}
@@ -212,7 +212,7 @@ export default function AdminCategoriesPage() {
               </div>
               <div className="p-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900">{c.name}</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{c.name}</h3>
                   <div className="flex items-center gap-2">
                     {c.is_active ? (
                       <Eye className="h-4 w-4 text-emerald-500" />
@@ -222,7 +222,7 @@ export default function AdminCategoriesPage() {
                     <GripVertical className="h-4 w-4 text-gray-300" />
                   </div>
                 </div>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   {c.products_count} product{c.products_count !== 1 ? "s" : ""}{" "}
                   Â· Order #{c.sort_order}
                 </p>
@@ -235,8 +235,8 @@ export default function AdminCategoriesPage() {
       {/* Delete Confirmation */}
       {deleting && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="bg-white dark:bg-[#0F1219] rounded-2xl p-6 max-w-sm w-full shadow-xl dark:border dark:border-white/[0.06]">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               Delete &ldquo;{deleting.name}&rdquo;?
             </h3>
             {deleting.products_count > 0 ? (
@@ -246,14 +246,14 @@ export default function AdminCategoriesPage() {
                 first.
               </p>
             ) : (
-              <p className="text-sm text-gray-500 mb-6">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                 This action cannot be undone.
               </p>
             )}
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setDeleting(null)}
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.06] rounded-xl transition-colors"
               >
                 Cancel
               </button>
@@ -272,21 +272,21 @@ export default function AdminCategoriesPage() {
       {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900">
+          <div className="bg-white dark:bg-[#0F1219] rounded-2xl w-full max-w-md shadow-xl dark:border dark:border-white/[0.06]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-white/[0.06]">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {editing ? "Edit Category" : "New Category"}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/[0.06] rounded-lg"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Name *
                 </label>
                 <input
@@ -295,13 +295,13 @@ export default function AdminCategoriesPage() {
                   onChange={(e) =>
                     setForm({ ...form, name: e.target.value })
                   }
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-chocolate"
+                  className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Sort Order
                 </label>
                 <input
@@ -310,17 +310,17 @@ export default function AdminCategoriesPage() {
                   onChange={(e) =>
                     setForm({ ...form, sort_order: e.target.value })
                   }
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-chocolate"
+                  className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                 />
               </div>
 
               {/* Image */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Image
                 </label>
                 {form.image ? (
-                  <div className="relative w-full h-32 rounded-xl overflow-hidden border border-gray-200 group mb-2">
+                  <div className="relative w-full h-32 rounded-xl overflow-hidden border border-gray-200 dark:border-white/[0.06] group mb-2">
                     <Image
                       src={form.image}
                       alt=""
@@ -337,9 +337,9 @@ export default function AdminCategoriesPage() {
                     </button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed border-gray-200 cursor-pointer hover:border-chocolate hover:bg-cream/50 transition-colors">
+                  <label className="flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/[0.1] cursor-pointer hover:border-[#3B82F6] hover:bg-[#3B82F6]/5 transition-colors">
                     {uploading ? (
-                      <div className="w-6 h-6 border-2 border-chocolate border-t-transparent rounded-full animate-spin" />
+                      <div className="w-6 h-6 border-2 border-[#3B82F6] border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
                         <Upload className="h-6 w-6 text-gray-400 mb-1" />
@@ -366,7 +366,7 @@ export default function AdminCategoriesPage() {
                   onChange={(e) =>
                     setForm({ ...form, is_active: e.target.checked })
                   }
-                  className="rounded border-gray-300 text-chocolate focus:ring-chocolate"
+                  className="rounded border-gray-300 dark:border-white/[0.1] text-[#3B82F6] focus:ring-[#3B82F6]"
                 />
                 Active
               </label>
@@ -375,14 +375,14 @@ export default function AdminCategoriesPage() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="px-5 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.06] rounded-xl transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2.5 text-sm font-medium bg-chocolate text-white rounded-xl hover:bg-chocolate/90 transition-colors disabled:opacity-50"
+                  className="px-5 py-2.5 text-sm font-medium bg-[#3B82F6] text-white rounded-xl hover:bg-[#3B82F6]/90 shadow-sm shadow-[#3B82F6]/20 transition-colors disabled:opacity-50"
                 >
                   {saving ? "Saving..." : editing ? "Update" : "Create"}
                 </button>
