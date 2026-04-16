@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 60" fill="none">
+  <text x="90" y="28" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="900" font-size="22" fill="#1B5E20">HILAL</text>
+  <text x="90" y="46" text-anchor="middle" font-family="Arial, sans-serif" font-weight="600" font-size="12" fill="#4CAF50" letter-spacing="4">FOODS</text>
+  <path d="M20 30 Q30 10 40 30" stroke="#4CAF50" stroke-width="2" fill="none"/>
+</svg>

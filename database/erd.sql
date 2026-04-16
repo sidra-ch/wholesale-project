@@ -1,0 +1,251 @@
+-- ============================================================
+-- SweetWholesale — Entity Relationship Diagram (Text Form)
+-- ============================================================
+--
+-- ┌──────────────────┐       ┌──────────────────┐
+-- │ customer_groups   │       │    categories     │
+-- │──────────────────│       │──────────────────│
+-- │ PK id             │       │ PK id             │
+-- │    name            │       │ FK parent_id ─┐   │
+-- │    slug            │       │    name       │   │
+-- │    discount_pct    │       │    slug       │   │
+-- └────────┬─────────┘       │    image      │   │
+--          │ 1               │    sort_order  │   │
+--          │                 │    is_active   │   │
+--          │ 0..*            └───────┬┬───────┘   │
+--          │                         ││  ▲ self   │
+-- ┌────────┴─────────┐              ││  └────────┘
+-- │      users        │              │1
+-- │──────────────────│              │
+-- │ PK id             │              │
+-- │    name            │              │ 0..*
+-- │    email           │      ┌──────┴───────────┐
+-- │    phone           │      │     products      │
+-- │    password         │      │──────────────────│
+-- │    role             │      │ PK id             │
+-- │    status           │      │ FK category_id    │
+-- │ FK customer_group_id│      │    name            │
+-- │    business_name    │      │    slug            │
+-- └──┬──────┬──────────┘      │    sku             │
+--    │      │                 │    retail_price     │
+--    │      │                 │    wholesale_price  │
+--    │      │                 │    distributor_price │
+--    │      │                 │    cost_price       │
+--    │      │                 │    moq              │
+--    │      │                 │    stock            │
+--    │      │                 │    brand            │
+--    │      │                 │    unit             │
+--    │      │                 │    is_active        │
+--    │      │                 │    is_featured      │
+--    │      │                 └──┬───┬──┬──┬───────┘
+--    │      │                   │   │  │  │
+--    │      │                   │   │  │  │ 1
+--    │      │                   │   │  │  │
+--    │      │                   │   │  │  │ 0..*
+--    │      │                   │   │  │ ┌┴──────────────┐
+--    │      │                   │   │  │ │ product_images │
+--    │      │                   │   │  │ │───────────────│
+--    │      │                   │   │  │ │ PK id          │
+--    │      │                   │   │  │ │ FK product_id  │
+--    │      │                   │   │  │ │    image_url   │
+--    │      │                   │   │  │ │    sort_order  │
+--    │      │                   │   │  │ └───────────────┘
+--    │      │                   │   │  │
+--    │      │                   │   │  │ 1
+--    │      │                   │   │  │ 0..*
+--    │      │                   │   │ ┌┴──────────────┐
+--    │      │                   │   │ │  stock_logs    │
+--    │      │                   │   │ │───────────────│
+--    │      │                   │   │ │ PK id          │
+--    │      │                   │   │ │ FK product_id  │
+--    │      │                   │   │ │    type (in/out)│
+--    │      │                   │   │ │    quantity    │
+--    │      │                   │   │ │    reason      │
+--    │      │                   │   │ │ FK created_by  │
+--    │      │                   │   │ └───────────────┘
+--    │      │                   │   │
+--    │      │                   │   │ 1
+--    │      │                   │   │ 0..*
+--    │      │                   │  ┌┴──────────────┐
+--    │      │                   │  │ pricing_rules  │
+--    │      │                   │  │───────────────│
+--    │      │                   │  │ PK id          │
+--    │      │                   │  │ FK product_id  │
+--    │      │                   │  │ FK cust_group_id│
+--    │      │                   │  │    min_qty     │
+--    │      │                   │  │    max_qty     │
+--    │      │                   │  │    price       │
+--    │      │                   │  └───────────────┘
+--    │      │                   │
+--    │      │ 1                 │
+--    │      │ 0..*              │
+--    │   ┌──┴────────┐          │
+--    │   │ addresses  │          │
+--    │   │───────────│          │
+--    │   │ PK id      │          │
+--    │   │ FK user_id │          │
+--    │   │    name     │          │
+--    │   │    phone    │          │
+--    │   │    address  │          │
+--    │   │    city     │          │
+--    │   │    is_default│         │
+--    │   └────────────┘          │
+--    │                           │
+--    │ 1        ┌────────────────┘
+--    │ 0..*     │
+--    │          │ 0..*
+-- ┌──┴──────┐   │         ┌────────────────┐     ┌───────────────┐
+-- │  carts   │   │         │   order_items   │     │   invoices     │
+-- │─────────│   │         │───────────────│     │──────────────│
+-- │ PK id    │   │         │ PK id          │     │ PK id          │
+-- │ FK user_id│  │         │ FK order_id    │     │ FK order_id(UQ)│
+-- │ FK prod_id│  │         │ FK product_id  │     │    invoice_number│
+-- │ quantity  │   │         │    product_name │     │    subtotal    │
+-- └──────────┘   │         │    sku         │     │    tax_amount  │
+--                │         │    price_at_time│     │    total_amount│
+--    1           │         │    quantity     │     │    pdf_url     │
+--    │ 0..*      │         │    subtotal     │     │    due_date    │
+-- ┌──┴──────────┐│         └───────┬────────┘     └──────┬────────┘
+-- │   orders     ││                │ 0..*                │ 0..1
+-- │─────────────││                │                      │
+-- │ PK id        ││     ┌──────────┴──────────────────────┘
+-- │ FK user_id   ││     │ 1
+-- │ order_number ││     │
+-- │ subtotal     │◄─────┘
+-- │ shipping_amt │
+-- │ tax_amount   │
+-- │ total_amount │
+-- │ status       │
+-- │ payment_status│
+-- │ shipping_addr │(JSON)
+-- └──┬───────────┘
+--    │ 1
+--    │ 0..*
+-- ┌──┴───────────┐
+-- │   payments    │
+-- │──────────────│
+-- │ PK id         │
+-- │ FK order_id   │
+-- │    amount      │
+-- │    method      │
+-- │    status      │
+-- │    trans_id    │
+-- │    paid_at     │
+-- └──────────────┘
+--
+--
+-- ============================================================
+-- RELATIONSHIP SUMMARY
+-- ============================================================
+--
+-- customer_groups  1 ──── 0..* users
+--     A customer group (retail/wholesale/distributor) has many users.
+--     A user belongs to at most one group. Pending users have NULL group.
+--
+-- categories  1 ──── 0..* products
+--     A category contains many products.
+--     A product belongs to exactly one category.
+--     ON DELETE RESTRICT: cannot delete category with products.
+--
+-- categories  1 ──── 0..* categories  (self-referential)
+--     A category can have sub-categories (parent_id).
+--     ON DELETE SET NULL: deleting parent promotes children to root.
+--
+-- products  1 ──── 0..* product_images
+--     A product can have multiple images ordered by sort_order.
+--     ON DELETE CASCADE: deleting product removes its images.
+--
+-- products  1 ──── 0..* stock_logs
+--     Every stock change is recorded as an audit entry.
+--     ON DELETE CASCADE: deleting product removes its logs.
+--
+-- products  1 ──── 0..* pricing_rules
+--     Quantity-tier pricing for specific customer groups.
+--     ON DELETE CASCADE: deleting product removes its rules.
+--
+-- users  1 ──── 0..* addresses
+--     Users have multiple shipping addresses (one marked default).
+--     ON DELETE CASCADE: deleting user removes addresses.
+--
+-- users  1 ──── 0..* carts
+--     Server-side cart rows for logged-in users.
+--     Unique constraint on (user_id, product_id).
+--     ON DELETE CASCADE on both FKs.
+--
+-- users  1 ──── 0..* orders
+--     Users place many orders.
+--     ON DELETE RESTRICT: cannot delete user with orders.
+--
+-- orders  1 ──── 0..* order_items
+--     An order contains multiple line items.
+--     ON DELETE CASCADE: cancelling order removes items.
+--
+-- orders  1 ──── 0..* payments
+--     An order can have multiple payment attempts.
+--     ON DELETE CASCADE.
+--
+-- orders  1 ──── 0..1 invoices
+--     One invoice per successfully paid order.
+--     ON DELETE CASCADE.
+--
+-- order_items  0..* ──── 1 products
+--     Each line item references a product.
+--     ON DELETE RESTRICT: cannot delete product that has been ordered.
+--
+--
+-- ============================================================
+-- BUSINESS LOGIC ENFORCEMENT
+-- ============================================================
+--
+-- 1. USER APPROVAL FLOW
+--    - Users register with status = 'pending'
+--    - Admin sets status to 'approved' and assigns customer_group_id
+--    - API/backend checks: if user.status != 'approved', hide prices
+--    - Price returned is based on customer_group:
+--        retail  → retail_price
+--        wholesale → wholesale_price
+--        distributor → distributor_price
+--
+-- 2. MOQ ENFORCEMENT (Application Layer)
+--    - Before adding to cart: quantity >= product.moq
+--    - Before checkout: re-validate all items meet MOQ
+--    - Cart INSERT enforced via unique (user_id, product_id)
+--
+-- 3. STOCK MANAGEMENT
+--    - Trigger `trg_order_items_after_insert`:
+--        • Decreases products.stock by order_items.quantity
+--        • Inserts stock_logs row with type='out', reason='order'
+--    - Trigger `trg_orders_after_update_cancel`:
+--        • When order.status changes to 'cancelled':
+--          restores stock and logs type='in', reason='return'
+--
+-- 4. INVOICE GENERATION (Application Layer)
+--    - After payment.status = 'paid':
+--        • Generate invoice_number: INV-YYYYMMDD-XXXXX
+--        • Generate PDF, store url in pdf_url
+--        • Insert into invoices table
+--
+-- 5. TIER PRICING OVERRIDE
+--    - pricing_rules table allows per-product quantity-break pricing
+--    - If matching rule exists for (product_id, customer_group_id, qty):
+--        use pricing_rules.price
+--    - Otherwise: use products.{group}_price
+--
+--
+-- ============================================================
+-- INDEX STRATEGY
+-- ============================================================
+--
+-- PRIMARY KEYS:     All tables use auto-increment BIGINT
+-- UNIQUE KEYS:      email, slug, sku, order_number, invoice_number,
+--                   cart (user_id+product_id), invoice (order_id)
+-- FOREIGN KEYS:     All relationships have FK indexes
+-- QUERY INDEXES:    status, payment_status, created_at, brand,
+--                   is_active, is_featured, stock, type
+--
+-- These indexes cover the primary query patterns:
+--   • Product listing: category_id + is_active + stock
+--   • Product search:  slug, sku, brand
+--   • Order listing:   user_id + status + created_at
+--   • Admin dashboard: status, payment_status
+--   • Stock alerts:    stock (for low_stock_threshold queries)
