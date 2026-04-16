@@ -56,8 +56,8 @@ export function BrandMarquee() {
       {/* Marquee wrapper */}
       <div className="gsap-fade-up relative border-y border-[#F2D6D6]/50 bg-white/60 backdrop-blur-sm overflow-hidden">
         {/* Edge fades */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-24 z-10 bg-gradient-to-r from-[#FFF6EF] to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-24 z-10 bg-gradient-to-l from-[#FFF6EF] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-16 lg:w-24 z-10 bg-gradient-to-r from-[#FFF6EF] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-16 lg:w-24 z-10 bg-gradient-to-l from-[#FFF6EF] to-transparent" />
 
         {/* Scrolling track */}
         <div className="flex items-center h-[70px] sm:h-[84px] marquee-track group">

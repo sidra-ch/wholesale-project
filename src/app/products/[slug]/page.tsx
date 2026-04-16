@@ -1,19 +1,20 @@
 "use client";
 
 import { useState, use, useEffect } from "react";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { Container } from "@/components/layout/Container";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { QuantitySelector } from "@/components/ui/QuantitySelector";
 import { Badge } from "@/components/ui/badge";
+import { ProductCard } from "@/components/product/ProductCard";
 import { fetchProduct } from "@/lib/api-data";
 import type { Product } from "@/lib/types";
 import { useCartStore } from "@/store/cart";
 import { useAuthStore } from "@/store/auth";
+import { useWishlistStore } from "@/store/wishlist";
 import { useHydration } from "@/hooks/useHydration";
 import { toast } from "@/components/ui/Toaster";
 import { openWhatsApp } from "@/lib/whatsapp";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 import { motion } from "framer-motion";
 import {
   ShoppingCart,
@@ -23,6 +24,8 @@ import {
   ShieldCheck,
   ChevronLeft,
   ChevronRight,
+  Heart,
+  Tag,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -33,6 +36,7 @@ export default function ProductDetailPage({
 }) {
   const { slug } = use(params);
   const [product, setProduct] = useState<Product | null>(null);
+  const [related, setRelated] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -40,11 +44,14 @@ export default function ProductDetailPage({
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const isWishlisted = useWishlistStore((s) => s.items.includes(product?.id || ""));
   const hydrated = useHydration();
 
   useEffect(() => {
-    fetchProduct(slug).then(({ product: data }) => {
+    fetchProduct(slug).then(({ product: data, related: relData }) => {
       setProduct(data);
+      setRelated(relData);
       if (data) setQuantity(data.moq);
       setLoading(false);
     });
@@ -108,8 +115,8 @@ export default function ProductDetailPage({
             {/* Image Gallery */}
             <div>
               <div className="relative aspect-square bg-light-gray rounded-2xl overflow-hidden mb-4 group">
-                <Image
-                  src={cloudinaryUrl(product.images[selectedImage], { width: 800, crop: "fill" })}
+                <SafeImage
+                  src={product.images[selectedImage]}
                   alt={product.name}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -154,8 +161,8 @@ export default function ProductDetailPage({
                           : "border-transparent hover:border-gray-300"
                       }`}
                     >
-                      <Image
-                        src={cloudinaryUrl(img, { width: 160, height: 160, crop: "fill" })}
+                      <SafeImage
+                        src={img}
                         alt=""
                         fill
                         className="object-cover"
@@ -179,19 +186,36 @@ export default function ProductDetailPage({
               {/* Price */}
               <div className="mb-5">
                 {hydrated && isAuthenticated ? (
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-3xl font-bold text-chocolate">
-                      ${product.price.toFixed(2)}
-                    </span>
-                    {product.comparePrice && (
-                      <span className="text-lg text-gray-400 line-through">
-                        ${product.comparePrice.toFixed(2)}
+                  <>
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-3xl font-bold text-chocolate">
+                        Rs {product.price.toFixed(2)}
                       </span>
-                    )}
-                    <span className="text-sm text-gray-400">
-                      per {product.unit}
-                    </span>
-                  </div>
+                      {product.comparePrice && (
+                        <span className="text-lg text-gray-400 line-through">
+                          Rs {product.comparePrice.toFixed(2)}
+                        </span>
+                      )}
+                      <span className="text-sm text-gray-400">
+                        per {product.unit}
+                      </span>
+                    </div>
+                    {/* Price Tiers */}
+                    <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <div className="bg-light-gray/50 rounded-xl p-3 text-center border border-gray-100">
+                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-wider">Retail</p>
+                        <p className="text-sm font-bold text-gray-600 mt-0.5">Rs {product.retailPrice?.toFixed(2) || product.comparePrice?.toFixed(2) || "—"}</p>
+                      </div>
+                      <div className="bg-chocolate/5 rounded-xl p-3 text-center border-2 border-chocolate/20">
+                        <p className="text-[10px] text-chocolate uppercase font-semibold tracking-wider">Wholesale</p>
+                        <p className="text-sm font-bold text-chocolate mt-0.5">Rs {product.price.toFixed(2)}</p>
+                      </div>
+                      <div className="bg-emerald-50 rounded-xl p-3 text-center border border-emerald-200">
+                        <p className="text-[10px] text-emerald-600 uppercase font-semibold tracking-wider">VIP/Distributor</p>
+                        <p className="text-sm font-bold text-emerald-600 mt-0.5">Rs {product.distributorPrice?.toFixed(2) || "—"}</p>
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <div className="flex items-center gap-2 text-gray-400">
                     <Lock className="h-5 w-5" />
@@ -201,6 +225,20 @@ export default function ProductDetailPage({
                   </div>
                 )}
               </div>
+
+              {/* Wishlist */}
+              <button
+                onClick={() => {
+                  toggleWishlist(product.id);
+                  toast(isWishlisted ? "Removed from wishlist" : "Added to wishlist");
+                }}
+                className={`inline-flex items-center gap-2 text-sm font-medium mb-5 transition-colors ${
+                  isWishlisted ? "text-candy" : "text-gray-400 hover:text-candy"
+                }`}
+              >
+                <Heart className={`h-4 w-4 ${isWishlisted ? "fill-current" : ""}`} />
+                {isWishlisted ? "In Wishlist" : "Add to Wishlist"}
+              </button>
 
               {/* Badges */}
               <div className="flex flex-wrap gap-2 mb-6">
@@ -254,12 +292,11 @@ export default function ProductDetailPage({
                     className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 bg-candy text-white rounded-xl font-semibold text-sm hover:bg-red-600 transition-colors disabled:opacity-50"
                   >
                     <ShoppingCart className="h-5 w-5" />
-                    Add to Cart — $
-                    {(product.price * quantity).toFixed(2)}
+                    Add to Cart — Rs {(product.price * quantity).toFixed(2)}
                   </button>
                   <button
                     onClick={() => {
-                      openWhatsApp({ productName: product.name, moq: product.moq, price: `$${product.price}` });
+                      openWhatsApp({ productName: product.name, moq: product.moq, price: `Rs ${product.price}` });
                       toast("Sent to WhatsApp", "whatsapp", "Our team will reply shortly");
                     }}
                     className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-[#25D366]/30 transition-all"
@@ -279,7 +316,7 @@ export default function ProductDetailPage({
                   </Link>
                   <button
                     onClick={() => {
-                      openWhatsApp({ productName: product.name, moq: product.moq, price: `$${product.price}` });
+                      openWhatsApp({ productName: product.name, moq: product.moq, price: `Rs ${product.price}` });
                       toast("Sent to WhatsApp", "whatsapp", "Our team will reply shortly");
                     }}
                     className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-[#25D366]/30 transition-all"
@@ -294,7 +331,7 @@ export default function ProductDetailPage({
               <div className="flex flex-col sm:flex-row gap-4 p-4 bg-light-gray/50 rounded-xl">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Truck className="h-4 w-4 text-candy" />
-                  Free delivery over $500
+                  Free delivery over Rs 500
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <ShieldCheck className="h-4 w-4 text-candy" />
@@ -329,6 +366,21 @@ export default function ProductDetailPage({
               </p>
             </div>
           </div>
+
+          {/* Related Products */}
+          {related.length > 0 && (
+            <div className="mt-16">
+              <div className="flex items-center gap-2 mb-6">
+                <Tag className="h-5 w-5 text-candy" />
+                <h2 className="text-xl font-bold text-dark-text">Related Products</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {related.slice(0, 4).map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+            </div>
+          )}
         </Container>
       </section>
     </>

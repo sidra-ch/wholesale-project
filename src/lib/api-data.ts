@@ -15,6 +15,7 @@ function mapApiProduct(p: ApiProduct): Product {
 
   const wholesale = parseFloat(p.wholesale_price);
   const retail = parseFloat(p.retail_price);
+  const distributor = parseFloat(p.distributor_price);
 
   return {
     id: String(p.id),
@@ -23,6 +24,8 @@ function mapApiProduct(p: ApiProduct): Product {
     description: p.description || p.short_description || "",
     price: wholesale,
     comparePrice: retail > wholesale ? retail : undefined,
+    retailPrice: retail,
+    distributorPrice: distributor,
     images,
     category: p.category?.name || "",
     brand: p.brand || "",

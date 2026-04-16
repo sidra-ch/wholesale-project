@@ -94,6 +94,35 @@
   --sidebar-ring: #3B2416;
 }
 
+.dark {
+  --background: #1a1018;
+  --foreground: #f5e6d8;
+  --card: #231a20;
+  --card-foreground: #f5e6d8;
+  --popover: #231a20;
+  --popover-foreground: #f5e6d8;
+  --primary: #f5e6d8;
+  --primary-foreground: #1a1018;
+  --secondary: #2d2228;
+  --secondary-foreground: #f5e6d8;
+  --muted: #2d2228;
+  --muted-foreground: #a89490;
+  --accent: #E53935;
+  --accent-foreground: #FFFFFF;
+  --destructive: #DC2626;
+  --border: #3d3038;
+  --input: #3d3038;
+  --ring: #E53935;
+  --sidebar: #1a1018;
+  --sidebar-foreground: #f5e6d8;
+  --sidebar-primary: #f5e6d8;
+  --sidebar-primary-foreground: #1a1018;
+  --sidebar-accent: #2d2228;
+  --sidebar-accent-foreground: #f5e6d8;
+  --sidebar-border: #3d3038;
+  --sidebar-ring: #E53935;
+}
+
 /* ── Premium Glassmorphism & Animation Utilities ── */
 @layer utilities {
   .glass {
@@ -172,6 +201,21 @@
   }
 }
 
+/* ── Dark mode overrides for common patterns ── */
+.dark .bg-white { background-color: var(--card) !important; }
+.dark .bg-light-gray { background-color: var(--secondary) !important; }
+.dark .bg-cream { background-color: var(--background) !important; }
+.dark .bg-cream-alt { background-color: var(--background) !important; }
+.dark .text-dark-text { color: var(--foreground) !important; }
+.dark .text-chocolate { color: var(--foreground) !important; }
+.dark .text-para { color: var(--muted-foreground) !important; }
+.dark .border-gray-100 { border-color: var(--border) !important; }
+.dark .border-gray-200 { border-color: var(--border) !important; }
+.dark .bg-gray-50 { background-color: var(--secondary) !important; }
+.dark .hover\:bg-light-gray\/50:hover { background-color: rgba(45, 34, 40, 0.5) !important; }
+.dark .glass { background: rgba(26, 16, 24, 0.6) !important; border-color: rgba(255, 255, 255, 0.08) !important; }
+.dark .glass-card { background: rgba(35, 26, 32, 0.7) !important; border-color: rgba(255, 255, 255, 0.08) !important; }
+
 /* ── Custom Scrollbar ── */
 ::-webkit-scrollbar {
   width: 8px;
@@ -185,6 +229,18 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(59, 36, 22, 0.35);
+}
+.dark ::-webkit-scrollbar-track,
+.dark::-webkit-scrollbar-track {
+  background: #1a1018;
+}
+.dark ::-webkit-scrollbar-thumb,
+.dark::-webkit-scrollbar-thumb {
+  background: rgba(245, 230, 216, 0.15);
+}
+.dark ::-webkit-scrollbar-thumb:hover,
+.dark::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 230, 216, 0.25);
 }
 
 /* ── Swiper Overrides ── */

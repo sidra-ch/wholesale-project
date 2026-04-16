@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Container } from "@/components/layout/Container";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { ProductCard } from "@/components/product/ProductCard";
@@ -9,11 +9,14 @@ import {
   MobileFilterDrawer,
 } from "@/components/product/FilterSidebar";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { QuickViewModal } from "@/components/product/QuickViewModal";
 import { fetchProducts } from "@/lib/api-data";
 import type { Product } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { Search, X } from "lucide-react";
 import { Suspense } from "react";
+import Link from "next/link";
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -21,6 +24,10 @@ function ProductsContent() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const [filters, setFilters] = useState({
     category: categoryParam,
@@ -38,8 +45,42 @@ function ProductsContent() {
     });
   }, []);
 
+  // Close suggestions on click outside
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  // Search suggestions
+  const suggestions = useMemo(() => {
+    if (!searchQuery.trim() || searchQuery.length < 2) return [];
+    const q = searchQuery.toLowerCase();
+    return products.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.brand.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q)
+    ).slice(0, 5);
+  }, [searchQuery, products]);
+
   const filtered = useMemo(() => {
     let result = [...products];
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.brand.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q)
+      );
+    }
 
     if (filters.category) {
       result = result.filter(
@@ -80,7 +121,7 @@ function ProductsContent() {
     }
 
     return result;
-  }, [filters, sort, products]);
+  }, [filters, sort, products, searchQuery]);
 
   return (
     <>
@@ -112,8 +153,56 @@ function ProductsContent() {
             </div>
           </div>
 
+          {/* Search Bar */}
+          <div ref={searchRef} className="relative mb-6">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                placeholder="Search products, brands, categories..."
+                className="w-full pl-11 pr-10 py-3 border border-gray-200 rounded-2xl text-sm outline-none focus:border-chocolate focus:ring-2 focus:ring-chocolate/10 bg-white transition-all"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => { setSearchQuery(""); setShowSuggestions(false); }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+            {/* Suggestions Dropdown */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-0 z-20 mt-1 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+                {suggestions.map((p) => (
+                  <Link
+                    key={p.id}
+                    href={`/products/${p.slug}`}
+                    onClick={() => setShowSuggestions(false)}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-light-gray/50 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden relative flex-shrink-0">
+                      <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-dark-text truncate">{p.name}</p>
+                      <p className="text-xs text-gray-400">{p.brand} · {p.category}</p>
+                    </div>
+                    <span className="text-sm font-semibold text-chocolate">Rs {p.price.toFixed(2)}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Content */}
-          <div className="flex gap-8">
+          <div className="flex gap-0 lg:gap-8">
             <FilterSidebar filters={filters} onChange={setFilters} />
             <div className="flex-1">
               {loading ? (
@@ -136,7 +225,11 @@ function ProductsContent() {
                   className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
                 >
                   {filtered.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      onQuickView={setQuickViewProduct}
+                    />
                   ))}
                 </motion.div>
               ) : (
@@ -149,6 +242,12 @@ function ProductsContent() {
           </div>
         </Container>
       </section>
+      {quickViewProduct && (
+        <QuickViewModal
+          product={quickViewProduct}
+          onClose={() => setQuickViewProduct(null)}
+        />
+      )}
     </>
   );
 }

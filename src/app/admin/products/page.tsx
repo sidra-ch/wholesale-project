@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import {
@@ -23,7 +23,7 @@ import {
   EyeOff,
   Star,
 } from "lucide-react";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 interface ProductImage {
   image_url: string;
@@ -321,7 +321,7 @@ export default function AdminProductsPage() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/[0.05] overflow-hidden shrink-0 relative">
                           {p.images?.[0] ? (
-                            <Image
+                            <SafeImage
                               src={p.images[0].image_url}
                               alt={p.name}
                               fill
@@ -346,10 +346,10 @@ export default function AdminProductsPage() {
                       {p.sku}
                     </td>
                     <td className="py-3 px-4 text-gray-600 dark:text-gray-400">
-                      {p.category?.name || "â€”"}
+                      {p.category?.name || "—"}
                     </td>
                     <td className="py-3 px-4 text-right font-semibold text-gray-900 dark:text-white">
-                      ${parseFloat(p.retail_price).toFixed(2)}
+                      Rs {parseFloat(p.retail_price).toFixed(2)}
                     </td>
                     <td className="py-3 px-4 text-right">
                       <span
@@ -659,7 +659,7 @@ export default function AdminProductsPage() {
                       key={idx}
                       className="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-200 dark:border-white/[0.06] group"
                     >
-                      <Image
+                      <SafeImage
                         src={img.image_url}
                         alt=""
                         fill

@@ -13,10 +13,13 @@ import {
   User,
   LogIn,
   Sparkles,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { Container } from "./Container";
 import { useCartStore } from "@/store/cart";
 import { useAuthStore } from "@/store/auth";
+import { useThemeStore } from "@/store/theme";
 import { useHydration } from "@/hooks/useHydration";
 import { fetchCategories } from "@/lib/api-data";
 import type { Category } from "@/lib/types";
@@ -31,10 +34,14 @@ export function Navbar() {
   const openCart = useCartStore((s) => s.openCart);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const loadFromStorage = useAuthStore((s) => s.loadFromStorage);
+  const dark = useThemeStore((s) => s.dark);
+  const toggleTheme = useThemeStore((s) => s.toggle);
+  const loadTheme = useThemeStore((s) => s.load);
 
   useEffect(() => {
     loadFromStorage();
-  }, [loadFromStorage]);
+    loadTheme();
+  }, [loadFromStorage, loadTheme]);
 
   useEffect(() => {
     fetchCategories().then(setCategories);
@@ -53,8 +60,8 @@ export function Navbar() {
       transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
       className={`sticky top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-white/90 backdrop-blur-2xl shadow-[0_4px_30px_rgba(59,36,22,0.08)] border-b border-[#F2D6D6]/50"
-          : "bg-white/70 backdrop-blur-xl border-b border-transparent"
+          ? "bg-white/90 dark:bg-[#1a1018]/90 backdrop-blur-2xl shadow-[0_4px_30px_rgba(59,36,22,0.08)] border-b border-[#F2D6D6]/50 dark:border-[#3d3038]/50"
+          : "bg-white/70 dark:bg-[#1a1018]/70 backdrop-blur-xl border-b border-transparent"
       }`}
     >
       <Container>
@@ -66,7 +73,7 @@ export function Navbar() {
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
               className="w-[50px] h-[50px] rounded-full overflow-hidden shadow-lg shadow-candy/20"
             >
-              <Image src="https://res.cloudinary.com/dfixnhqn0/image/upload/q_auto/f_auto/v1774637471/logo-img_t6qfjg.jpg" alt="Arslan Wholesale" width={50} height={50} className="object-cover" />
+              <Image src="/images/logo.jpg" alt="Arslan Wholesale" width={50} height={50} className="object-cover" />
             </motion.div>
             <span className="text-xl font-bold text-[#2E1B12] hidden sm:block">
               Arslan <span className="text-gradient">Wholesale</span>
@@ -155,6 +162,21 @@ export function Navbar() {
               />
             </div>
 
+            {/* Dark Mode Toggle */}
+            <motion.button
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.92 }}
+              onClick={toggleTheme}
+              className="p-2.5 rounded-2xl hover:bg-candy/5 transition-colors"
+              aria-label="Toggle dark mode"
+            >
+              {hydrated && dark ? (
+                <Sun className="h-5 w-5 text-yellow-500" />
+              ) : (
+                <Moon className="h-5 w-5 text-chocolate" />
+              )}
+            </motion.button>
+
             {/* Cart */}
             <motion.button
               whileHover={{ scale: 1.08 }}
@@ -229,7 +251,7 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
-            className="lg:hidden border-t border-white/30 bg-white/90 backdrop-blur-2xl overflow-hidden"
+            className="lg:hidden border-t border-white/30 bg-white/90 dark:bg-[#1a1018]/90 backdrop-blur-2xl overflow-hidden"
           >
             <Container className="py-5 space-y-1">
               {/* Mobile Search */}

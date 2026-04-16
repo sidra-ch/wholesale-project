@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 const faviconUrl =
-  "https://res.cloudinary.com/dfixnhqn0/image/upload/q_auto/f_auto/v1774637471/logo-img_t6qfjg.jpg";
+  "/images/logo.jpg";
 
 export default function RootLayout({
   children,

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import {
@@ -19,7 +19,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 interface CategoryRow {
   id: number;
@@ -182,7 +182,7 @@ export default function AdminCategoriesPage() {
             >
                 <div className="relative h-32 bg-gray-100 dark:bg-white/[0.02]">
                 {c.image ? (
-                  <Image
+                  <SafeImage
                     src={c.image}
                     alt={c.name}
                     fill
@@ -224,7 +224,7 @@ export default function AdminCategoriesPage() {
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   {c.products_count} product{c.products_count !== 1 ? "s" : ""}{" "}
-                  Â· Order #{c.sort_order}
+                  · Order #{c.sort_order}
                 </p>
               </div>
             </div>
@@ -321,7 +321,7 @@ export default function AdminCategoriesPage() {
                 </label>
                 {form.image ? (
                   <div className="relative w-full h-32 rounded-xl overflow-hidden border border-gray-200 dark:border-white/[0.06] group mb-2">
-                    <Image
+                    <SafeImage
                       src={form.image}
                       alt=""
                       fill

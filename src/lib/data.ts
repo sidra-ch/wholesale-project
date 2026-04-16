@@ -1,11 +1,8 @@
 import type { Product, Category } from "./types";
 
-const CLD = "https://res.cloudinary.com/dfixnhqn0/image/upload";
-const CLD_VIDEO = "https://res.cloudinary.com/dfixnhqn0/video/upload";
-
-// Helper to build Cloudinary image URL
+// Local images from public/images folder
 function img(n: number): string {
-  return `${CLD}/q_auto/f_auto/wholesale/gallery/img${n}`;
+  return `/images/img${n}.jpeg`;
 }
 
 // All available image numbers (img37 and img43 don't exist)
@@ -15,19 +12,19 @@ const IMAGE_NUMBERS = [
   40, 41, 42, 44,
 ];
 
-// Full pool of all Cloudinary images
+// Full pool of all images
 export const IMAGE_POOL = IMAGE_NUMBERS.map((n) => img(n));
 
-// Video pool (all on Cloudinary)
+// Video pool (local public folder)
 export const VIDEO_POOL = [
-  `${CLD_VIDEO}/q_auto/wholesale/videos/video1.mp4`,
-  `${CLD_VIDEO}/q_auto/wholesale/videos/video2.mp4`,
-  `${CLD_VIDEO}/q_auto/wholesale/videos/video3.mp4`,
-  `${CLD_VIDEO}/q_auto/wholesale/videos/video4.mp4`,
+  `/images/video1.mp4`,
+  `/images/video2.mp4`,
+  `/images/video3.mp4`,
+  `/images/video4.mp4`,
 ];
 
 // Hero fallback image
-export const HERO_FALLBACK = `${CLD}/q_auto/f_auto/wholesale/gallery/hero-2`;
+export const HERO_FALLBACK = `/images/hero-2.webp`;
 
 // Shuffle utility (Fisher-Yates)
 function shuffle<T>(arr: T[]): T[] {

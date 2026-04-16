@@ -207,7 +207,7 @@ export default function AdminOrdersPage() {
                         </div>
                       </td>
                       <td className="py-3 px-4 text-right font-semibold text-gray-900 dark:text-white">
-                        ${parseFloat(o.total).toFixed(2)}
+                        Rs {parseFloat(o.total).toFixed(2)}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <span
@@ -312,13 +312,11 @@ export default function AdminOrdersPage() {
                             {item.product?.name || "Product"}
                           </p>
                           <p className="text-xs text-gray-400">
-                            Qty: {item.quantity} Ã— $
-                            {parseFloat(item.price).toFixed(2)}
+                            Qty: {item.quantity} × Rs {parseFloat(item.price).toFixed(2)}
                           </p>
                         </div>
                         <span className="font-semibold">
-                          $
-                          {(item.quantity * parseFloat(item.price)).toFixed(2)}
+                          Rs {(item.quantity * parseFloat(item.price)).toFixed(2)}
                         </span>
                       </div>
                     ))}
@@ -330,7 +328,7 @@ export default function AdminOrdersPage() {
               <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-white/[0.06]">
                 <span className="font-medium text-gray-500 dark:text-gray-400">Total</span>
                 <span className="text-xl font-bold text-gray-900 dark:text-white">
-                  ${parseFloat(selected.total).toFixed(2)}
+                  Rs {parseFloat(selected.total).toFixed(2)}
                 </span>
               </div>
 

@@ -1,14 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { QuantitySelector } from "@/components/ui/QuantitySelector";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useCartStore } from "@/store/cart";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 import { useHydration } from "@/hooks/useHydration";
 import { Trash2, ArrowRight } from "lucide-react";
 
@@ -65,8 +64,8 @@ export default function CartPage() {
                       className="flex gap-4 bg-white rounded-2xl border border-gray-100 p-4"
                     >
                       <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden shrink-0">
-                        <Image
-                          src={cloudinaryUrl(item.product.images[0], { width: 224, height: 224, crop: "fill" })}
+                        <SafeImage
+                          src={item.product.images[0]}
                           alt={item.product.name}
                           fill
                           className="object-cover"
@@ -80,7 +79,7 @@ export default function CartPage() {
                           {item.product.name}
                         </Link>
                         <p className="text-xs text-gray-400 mt-0.5">
-                          {item.product.brand} · ${item.product.price.toFixed(2)}/
+                          {item.product.brand} · Rs {item.product.price.toFixed(2)}/
                           {item.product.unit}
                         </p>
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-3">
@@ -94,10 +93,7 @@ export default function CartPage() {
                           />
                           <div className="flex items-center gap-4">
                             <span className="font-bold text-chocolate">
-                              $
-                              {(
-                                item.product.price * item.quantity
-                              ).toFixed(2)}
+                              Rs {(item.product.price * item.quantity).toFixed(2)}
                             </span>
                             <button
                               onClick={() => removeItem(item.product.id)}
@@ -114,7 +110,7 @@ export default function CartPage() {
 
                 {/* Order Summary */}
                 <div>
-                  <div className="bg-white rounded-2xl border border-gray-100 p-6 sticky top-24">
+                  <div className="bg-white rounded-2xl border border-gray-100 p-6 lg:sticky lg:top-24">
                     <h2 className="font-bold text-dark-text mb-4">
                       Order Summary
                     </h2>
@@ -124,13 +120,13 @@ export default function CartPage() {
                           Subtotal ({items.length} items)
                         </span>
                         <span className="font-medium">
-                          ${totalPrice().toFixed(2)}
+                          Rs {totalPrice().toFixed(2)}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Shipping</span>
                         <span className="font-medium text-green-600">
-                          {totalPrice() >= 500 ? "Free" : "$25.00"}
+                          {totalPrice() >= 500 ? "Free" : "Rs 25.00"}
                         </span>
                       </div>
                       <div className="border-t border-gray-100 pt-3">
@@ -139,18 +135,14 @@ export default function CartPage() {
                             Total
                           </span>
                           <span className="text-xl font-bold text-chocolate">
-                            $
-                            {(
-                              totalPrice() +
-                              (totalPrice() >= 500 ? 0 : 25)
-                            ).toFixed(2)}
+                            Rs {(totalPrice() + (totalPrice() >= 500 ? 0 : 25)).toFixed(2)}
                           </span>
                         </div>
                       </div>
                     </div>
                     {totalPrice() < 500 && (
                       <p className="text-xs text-gray-400 mt-3">
-                        Add ${(500 - totalPrice()).toFixed(2)} more for free
+                        Add Rs {(500 - totalPrice()).toFixed(2)} more for free
                         shipping!
                       </p>
                     )}

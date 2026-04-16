@@ -142,13 +142,13 @@ export function WhyChooseUs() {
               <div className="flex gap-2">
                 <button
                   onClick={prev}
-                  className="w-9 h-9 rounded-full border border-[#F2D6D6] flex items-center justify-center hover:bg-candy hover:text-white hover:border-candy transition-all text-[#2E1B12]"
+                  className="w-10 h-10 rounded-full border border-[#F2D6D6] flex items-center justify-center hover:bg-candy hover:text-white hover:border-candy transition-all text-[#2E1B12]"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={next}
-                  className="w-9 h-9 rounded-full border border-[#F2D6D6] flex items-center justify-center hover:bg-candy hover:text-white hover:border-candy transition-all text-[#2E1B12]"
+                  className="w-10 h-10 rounded-full border border-[#F2D6D6] flex items-center justify-center hover:bg-candy hover:text-white hover:border-candy transition-all text-[#2E1B12]"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>

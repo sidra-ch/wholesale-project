@@ -2,10 +2,9 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Trash2, ShoppingBag, Minus, Plus } from "lucide-react";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { useCartStore } from "@/store/cart";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 
 export function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, totalPrice } =
@@ -71,8 +70,8 @@ export function CartDrawer() {
                       className="flex gap-3 bg-light-gray/50 rounded-xl p-3"
                     >
                       <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0">
-                        <Image
-                          src={cloudinaryUrl(item.product.images[0], { width: 160, height: 160, crop: "fill" })}
+                        <SafeImage
+                          src={item.product.images[0]}
                           alt={item.product.name}
                           fill
                           className="object-cover"
@@ -83,7 +82,7 @@ export function CartDrawer() {
                           {item.product.name}
                         </h4>
                         <p className="text-xs text-gray-400 mt-0.5">
-                          ${item.product.price.toFixed(2)} / {item.product.unit}
+                          Rs {item.product.price.toFixed(2)} / {item.product.unit}
                         </p>
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-white">
@@ -114,8 +113,7 @@ export function CartDrawer() {
                             </button>
                           </div>
                           <span className="text-sm font-bold text-chocolate">
-                            $
-                            {(item.product.price * item.quantity).toFixed(2)}
+                            Rs {(item.product.price * item.quantity).toFixed(2)}
                           </span>
                         </div>
                       </div>
@@ -139,7 +137,7 @@ export function CartDrawer() {
                     Subtotal
                   </span>
                   <span className="text-xl font-bold text-chocolate">
-                    ${totalPrice().toFixed(2)}
+                    Rs {totalPrice().toFixed(2)}
                   </span>
                 </div>
                 <Link

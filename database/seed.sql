@@ -113,33 +113,49 @@ INSERT INTO `products` (`id`, `category_id`, `name`, `slug`, `sku`, `description
  9.99, 7.00, 5.60, 3.90, 20, 250, 20, 'NatureCrunch', 'box', 0.60, 1, 1);
 
 -- ============================================================
--- Product Images
+-- Product Images (images + videos from public/images folder)
 -- ============================================================
-INSERT INTO `product_images` (`product_id`, `image_url`, `alt_text`, `sort_order`) VALUES
-(1,  '/images/img1.jpeg',   'Royal Butter Cookies',         0),
-(1,  '/images/img2.jpeg',   'Royal Butter Cookies',         1),
-(2,  '/images/img3.jpeg',   'Chocolate Cream Biscuits',     0),
-(2,  '/images/img4.jpeg',   'Chocolate Cream Biscuits',     1),
-(3,  '/images/img5.jpeg',   'Belgian Milk Chocolate Bar',   0),
-(3,  '/images/img6.jpeg',   'Belgian Milk Chocolate Bar',   1),
-(4,  '/images/img7.jpeg',   'Dark Chocolate Truffles',      0),
-(4,  '/images/img8.jpeg',   'Dark Chocolate Truffles',      1),
-(5,  '/images/img9.jpeg',   'Fruit Hard Candy Mix',         0),
-(5,  '/images/img10.jpeg',  'Fruit Hard Candy Mix',         1),
-(6,  '/images/img11.jpeg',  'Mint Drops',                   0),
-(6,  '/images/img12.jpeg',  'Mint Drops',                   1),
-(7,  '/images/img13.jpeg',  'Gummy Bear Family Pack',       0),
-(7,  '/images/img14.jpeg',  'Gummy Bear Family Pack',       1),
-(8,  '/images/img15.jpeg',  'Sour Worm Jellies',            0),
-(8,  '/images/img16.jpeg',  'Sour Worm Jellies',            1),
-(9,  '/images/img17.jpeg',  'Vanilla Cream Wafer Rolls',    0),
-(9,  '/images/img18.jpeg',  'Vanilla Cream Wafer Rolls',    1),
-(10, '/images/img19.jpeg',  'Hazelnut Wafer Bites',         0),
-(10, '/images/img20.jpeg',  'Hazelnut Wafer Bites',         1),
-(11, '/images/img21.jpeg',  'Oat Digestive Crackers',       0),
-(11, '/images/img22.jpeg',  'Oat Digestive Crackers',       1),
-(12, '/images/img23.jpeg',  'Cheese Crackers Party Pack',   0),
-(12, '/images/img24.jpeg',  'Cheese Crackers Party Pack',   1);
+INSERT INTO `product_images` (`product_id`, `image_url`, `public_id`, `type`, `alt_text`, `sort_order`) VALUES
+-- Product 1: Royal Butter Cookies
+(1,  '/images/img1.jpeg',   NULL, 'image', 'Royal Butter Cookies',         0),
+(1,  '/images/img2.jpeg',   NULL, 'image', 'Royal Butter Cookies',         1),
+(1,  '/images/video1.mp4',  NULL, 'video', 'Royal Butter Cookies promo',   2),
+-- Product 2: Chocolate Cream Biscuits
+(2,  '/images/img3.jpeg',   NULL, 'image', 'Chocolate Cream Biscuits',     0),
+(2,  '/images/img4.jpeg',   NULL, 'image', 'Chocolate Cream Biscuits',     1),
+-- Product 3: Belgian Milk Chocolate Bar
+(3,  '/images/img5.jpeg',   NULL, 'image', 'Belgian Milk Chocolate Bar',   0),
+(3,  '/images/img6.jpeg',   NULL, 'image', 'Belgian Milk Chocolate Bar',   1),
+(3,  '/images/video2.mp4',  NULL, 'video', 'Belgian Chocolate promo',      2),
+-- Product 4: Dark Chocolate Truffles
+(4,  '/images/img7.jpeg',   NULL, 'image', 'Dark Chocolate Truffles',      0),
+(4,  '/images/img8.jpeg',   NULL, 'image', 'Dark Chocolate Truffles',      1),
+-- Product 5: Fruit Hard Candy Mix
+(5,  '/images/img9.jpeg',   NULL, 'image', 'Fruit Hard Candy Mix',         0),
+(5,  '/images/img10.jpeg',  NULL, 'image', 'Fruit Hard Candy Mix',         1),
+(5,  '/images/video3.mp4',  NULL, 'video', 'Fruit Candy promo',            2),
+-- Product 6: Mint Drops
+(6,  '/images/img11.jpeg',  NULL, 'image', 'Mint Drops',                   0),
+(6,  '/images/img12.jpeg',  NULL, 'image', 'Mint Drops',                   1),
+-- Product 7: Gummy Bear Family Pack
+(7,  '/images/img13.jpeg',  NULL, 'image', 'Gummy Bear Family Pack',       0),
+(7,  '/images/img14.jpeg',  NULL, 'image', 'Gummy Bear Family Pack',       1),
+(7,  '/images/video4.mp4',  NULL, 'video', 'Gummy Bears promo',            2),
+-- Product 8: Sour Worm Jellies
+(8,  '/images/img15.jpeg',  NULL, 'image', 'Sour Worm Jellies',            0),
+(8,  '/images/img16.jpeg',  NULL, 'image', 'Sour Worm Jellies',            1),
+-- Product 9: Vanilla Cream Wafer Rolls
+(9,  '/images/img17.jpeg',  NULL, 'image', 'Vanilla Cream Wafer Rolls',    0),
+(9,  '/images/img18.jpeg',  NULL, 'image', 'Vanilla Cream Wafer Rolls',    1),
+-- Product 10: Hazelnut Wafer Bites
+(10, '/images/img19.jpeg',  NULL, 'image', 'Hazelnut Wafer Bites',         0),
+(10, '/images/img20.jpeg',  NULL, 'image', 'Hazelnut Wafer Bites',         1),
+-- Product 11: Oat Digestive Crackers
+(11, '/images/img21.jpeg',  NULL, 'image', 'Oat Digestive Crackers',       0),
+(11, '/images/img22.jpeg',  NULL, 'image', 'Oat Digestive Crackers',       1),
+-- Product 12: Cheese Crackers Party Pack
+(12, '/images/img23.jpeg',  NULL, 'image', 'Cheese Crackers Party Pack',   0),
+(12, '/images/img24.jpeg',  NULL, 'image', 'Cheese Crackers Party Pack',   1);
 
 -- ============================================================
 -- Addresses

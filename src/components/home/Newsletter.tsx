@@ -28,12 +28,12 @@ export function Newsletter() {
           {/* Right: Form */}
           <form
             onSubmit={(e) => e.preventDefault()}
-            className="gsap-fade-up flex gap-3 w-full sm:w-auto flex-shrink-0"
+            className="gsap-fade-up flex flex-col sm:flex-row gap-3 w-full sm:w-auto flex-shrink-0"
           >
             <input
               type="email"
               placeholder="Enter your email address"
-              className="px-5 py-3 rounded-[16px] text-sm outline-none text-[#2E1B12] placeholder:text-[#9A8B86] bg-[#FFF6EF] border border-[#F2D6D6]/50 focus:border-candy/30 focus:ring-2 focus:ring-candy/10 transition-all w-full sm:w-[280px]"
+              className="px-5 py-3 rounded-[16px] text-sm outline-none text-[#2E1B12] placeholder:text-[#9A8B86] bg-[#FFF6EF] border border-[#F2D6D6]/50 focus:border-candy/30 focus:ring-2 focus:ring-candy/10 transition-all w-full sm:w-[280px] min-w-0"
             />
             <button
               type="submit"

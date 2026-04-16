@@ -30,7 +30,7 @@ export function PageLoader() {
           >
             <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-candy/10">
               <Image
-                src="https://res.cloudinary.com/dfixnhqn0/image/upload/q_auto/f_auto/v1774637471/logo-img_t6qfjg.jpg"
+                src="/images/logo.jpg"
                 alt="Arslan Wholesale"
                 width={64}
                 height={64}

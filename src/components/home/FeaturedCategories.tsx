@@ -5,9 +5,8 @@ import { Container } from "@/components/layout/Container";
 import { fetchCategories } from "@/lib/api-data";
 import type { Category } from "@/lib/types";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ArrowRight } from "lucide-react";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 import { useScrollFadeUp } from "@/hooks/useGSAPScroll";
 
 export function FeaturedCategories() {
@@ -52,8 +51,8 @@ export function FeaturedCategories() {
               >
                 {/* Image */}
                 <div className="relative aspect-[4/3] bg-[#FFF6EF] overflow-hidden flex items-center justify-center p-4">
-                  <Image
-                    src={cloudinaryUrl(cat.image, { width: 300, height: 225, crop: "fill" })}
+                  <SafeImage
+                    src={cat.image}
                     alt={cat.name}
                     fill
                     className="object-contain transition-transform duration-500 group-hover:scale-110"

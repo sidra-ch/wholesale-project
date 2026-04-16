@@ -267,7 +267,7 @@ export default function PurchaseOrdersPage() {
                         <span>{po.supplier?.name || "—"}</span>
                       </div>
                     </td>
-                    <td className="py-3.5 px-3 text-right font-medium hidden md:table-cell">${parseFloat(po.total_amount).toLocaleString()}</td>
+                    <td className="py-3.5 px-3 text-right font-medium hidden md:table-cell">Rs {parseFloat(po.total_amount).toLocaleString()}</td>
                     <td className="py-3.5 px-3 text-center">
                       <span className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold capitalize ${statusColors[po.status]}`}>{po.status}</span>
                     </td>
@@ -316,10 +316,10 @@ export default function PurchaseOrdersPage() {
               <p><span className="text-gray-500">Status:</span> <span className={`px-2 py-0.5 rounded-md text-xs font-semibold capitalize ${statusColors[showDetail.status]}`}>{showDetail.status}</span></p>
               <p><span className="text-gray-500">Created by:</span> {showDetail.creator?.name}</p>
               <p><span className="text-gray-500">Expected:</span> {showDetail.expected_date || "—"}</p>
-              <p><span className="text-gray-500">Subtotal:</span> ${parseFloat(showDetail.subtotal).toFixed(2)}</p>
-              <p><span className="text-gray-500">Tax:</span> ${parseFloat(showDetail.tax_amount).toFixed(2)}</p>
-              <p><span className="text-gray-500">Shipping:</span> ${parseFloat(showDetail.shipping_cost).toFixed(2)}</p>
-              <p className="font-semibold"><span className="text-gray-500">Total:</span> ${parseFloat(showDetail.total_amount).toFixed(2)}</p>
+              <p><span className="text-gray-500">Subtotal:</span> Rs {parseFloat(showDetail.subtotal).toFixed(2)}</p>
+              <p><span className="text-gray-500">Tax:</span> Rs {parseFloat(showDetail.tax_amount).toFixed(2)}</p>
+              <p><span className="text-gray-500">Shipping:</span> Rs {parseFloat(showDetail.shipping_cost).toFixed(2)}</p>
+              <p className="font-semibold"><span className="text-gray-500">Total:</span> Rs {parseFloat(showDetail.total_amount).toFixed(2)}</p>
             </div>
             {showDetail.notes && <p className="text-sm text-gray-500 mb-4">Notes: {showDetail.notes}</p>}
             {showDetail.items && showDetail.items.length > 0 && (
@@ -341,8 +341,8 @@ export default function PurchaseOrdersPage() {
                         <td className="py-2">{item.product?.name || `#${item.product_id}`}</td>
                         <td className="py-2 text-center">{item.quantity}</td>
                         <td className="py-2 text-center">{item.received_quantity}</td>
-                        <td className="py-2 text-right">${parseFloat(String(item.unit_cost)).toFixed(2)}</td>
-                        <td className="py-2 text-right">${parseFloat(String(item.total_cost)).toFixed(2)}</td>
+                        <td className="py-2 text-right">Rs {parseFloat(String(item.unit_cost)).toFixed(2)}</td>
+                        <td className="py-2 text-right">Rs {parseFloat(String(item.total_cost)).toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -442,7 +442,7 @@ export default function PurchaseOrdersPage() {
                       className="w-20 px-2 py-2 rounded-lg border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] text-sm text-center" placeholder="Qty" />
                     <input type="number" min={0} step={0.01} value={item.unit_cost} onChange={(e) => updateItem(i, "unit_cost", +e.target.value)}
                       className="w-24 px-2 py-2 rounded-lg border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] text-sm text-right" placeholder="Cost" />
-                    <span className="text-sm font-medium w-20 text-right">${(item.quantity * item.unit_cost).toFixed(2)}</span>
+                    <span className="text-sm font-medium w-20 text-right">Rs {(item.quantity * item.unit_cost).toFixed(2)}</span>
                     {formItems.length > 1 && (
                       <button onClick={() => removeItem(i)} className="p-1 text-red-400 hover:text-red-500"><X className="h-4 w-4" /></button>
                     )}
@@ -464,7 +464,7 @@ export default function PurchaseOrdersPage() {
                   className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] text-sm" />
               </div>
               <div className="flex items-end">
-                <p className="text-lg font-bold text-gray-900 dark:text-white">Total: ${formTotal.toFixed(2)}</p>
+                <p className="text-lg font-bold text-gray-900 dark:text-white">Total: Rs {formTotal.toFixed(2)}</p>
               </div>
             </div>
 

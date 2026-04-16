@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -13,7 +13,6 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { useCartStore } from "@/store/cart";
 import { useAuthStore } from "@/store/auth";
 import { useHydration } from "@/hooks/useHydration";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -233,7 +232,7 @@ export default function CheckoutPage() {
 
             {/* Order Summary */}
             <div>
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 sticky top-24">
+              <div className="bg-white rounded-2xl border border-gray-100 p-6 lg:sticky lg:top-24">
                 <h2 className="font-bold text-dark-text mb-4">
                   Order Summary
                 </h2>
@@ -241,8 +240,8 @@ export default function CheckoutPage() {
                   {items.map((item) => (
                     <div key={item.product.id} className="flex gap-3">
                       <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0">
-                        <Image
-                          src={cloudinaryUrl(item.product.images[0], { width: 96, height: 96, crop: "fill" })}
+                        <SafeImage
+                          src={item.product.images[0]}
                           alt={item.product.name}
                           fill
                           className="object-cover"
@@ -253,11 +252,11 @@ export default function CheckoutPage() {
                           {item.product.name}
                         </p>
                         <p className="text-xs text-gray-400">
-                          Qty: {item.quantity} × ${item.product.price.toFixed(2)}
+                          Qty: {item.quantity} × Rs {item.product.price.toFixed(2)}
                         </p>
                       </div>
                       <span className="text-sm font-semibold whitespace-nowrap">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        Rs {(item.product.price * item.quantity).toFixed(2)}
                       </span>
                     </div>
                   ))}
@@ -265,19 +264,19 @@ export default function CheckoutPage() {
                 <div className="border-t border-gray-100 mt-4 pt-4 space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-500">Subtotal</span>
-                    <span>${totalPrice().toFixed(2)}</span>
+                    <span>Rs {totalPrice().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500">Shipping</span>
                     <span className={shipping === 0 ? "text-green-600" : ""}>
-                      {shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}
+                      {shipping === 0 ? "Free" : `Rs ${shipping.toFixed(2)}`}
                     </span>
                   </div>
                   <div className="border-t border-gray-100 pt-2">
                     <div className="flex justify-between">
                       <span className="font-bold text-dark-text">Total</span>
                       <span className="text-lg font-bold text-chocolate">
-                        ${total.toFixed(2)}
+                        Rs {total.toFixed(2)}
                       </span>
                     </div>
                   </div>

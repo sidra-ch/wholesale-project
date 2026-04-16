@@ -9,13 +9,13 @@ export function Footer() {
   return (
     <footer className="bg-[#FFF1E8] border-t border-[#F2D6D6]/50">
       <Container className="py-14">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10">
           {/* Brand */}
-          <div className="col-span-2 sm:col-span-3 lg:col-span-1">
+          <div className="col-span-full lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
               <div className="w-10 h-10 rounded-2xl overflow-hidden">
                 <Image
-                  src="https://res.cloudinary.com/dfixnhqn0/image/upload/q_auto/f_auto/v1774637471/logo-img_t6qfjg.jpg"
+                  src="/images/logo.jpg"
                   alt="Arslan Wholesale"
                   width={40}
                   height={40}

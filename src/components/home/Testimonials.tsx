@@ -53,7 +53,7 @@ export function Testimonials() {
           light
         />
 
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-7 mt-16">
+        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7 mt-10 sm:mt-16">
           {testimonials.map((t, i) => (
             <StaggerItem key={i}>
               <motion.div

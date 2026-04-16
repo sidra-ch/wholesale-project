@@ -51,6 +51,8 @@ export interface Product {
   description: string;
   price: number;
   comparePrice?: number;
+  retailPrice?: number;
+  distributorPrice?: number;
   images: string[];
   category: string;
   brand: string;

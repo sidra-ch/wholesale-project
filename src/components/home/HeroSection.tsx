@@ -232,7 +232,7 @@ export function HeroSection() {
               </Link>
               <Link
                 href="/products"
-                className="group inline-flex items-center gap-2.5 px-6 sm:px-8 py-3 sm:py-4 bg-white hover:bg-[#FFE2E2] text-[#2E1B12] rounded-[16px] font-medium text-[15px] transition-all duration-300 shadow-[0_12px_35px_rgba(0,0,0,0.06)] border border-[#F2D6D6] hover:-translate-y-0.5"
+                className="group inline-flex items-center gap-2.5 px-6 sm:px-8 py-3 sm:py-4 bg-white dark:bg-candy/10 hover:bg-[#FFE2E2] dark:hover:bg-candy/20 text-[#2E1B12] dark:text-white rounded-[16px] font-medium text-[15px] transition-all duration-300 shadow-[0_12px_35px_rgba(0,0,0,0.06)] border border-[#F2D6D6] dark:border-candy/30 hover:-translate-y-0.5"
               >
                 <ShoppingBag className="h-4 w-4 text-candy" />
                 Order Now
@@ -289,7 +289,7 @@ export function HeroSection() {
             className="relative hidden lg:flex flex-col gap-3 w-full lg:w-[52%] lg:flex-shrink-0"
           >
             {/* Top row: Video + Image carousel */}
-            <div className="flex gap-3" style={{ height: "380px" }}>
+            <div className="flex gap-3 h-[280px] sm:h-[340px] lg:h-[380px]">
               {/* Main video — large tile */}
               <div className="flex-[2] rounded-[28px] overflow-hidden relative group shadow-[0_12px_35px_rgba(0,0,0,0.06)] min-w-0">
                 {mainVideo && (
@@ -304,7 +304,7 @@ export function HeroSection() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
                 {/* NEW ARRIVALS floating card */}
-                <div className="absolute top-4 left-4 z-10 bg-white rounded-[20px] px-4 py-3 shadow-[0_12px_35px_rgba(0,0,0,0.06)] border border-[#F2D6D6]">
+                <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 bg-white rounded-[20px] px-3 py-2 sm:px-4 sm:py-3 shadow-[0_12px_35px_rgba(0,0,0,0.06)] border border-[#F2D6D6]">
                   <p className="text-candy text-[10px] font-bold uppercase tracking-widest">New Arrivals</p>
                   <p className="text-[#2E1B12] text-lg font-extrabold leading-tight mt-0.5">1,200+</p>
                   <p className="text-[#9A8B86] text-[10px]">Products This Week</p>
@@ -376,8 +376,7 @@ export function HeroSection() {
 
             {/* Bottom row: 3 auto-rotating image tiles with dot indicators */}
             <div
-              className="flex gap-3"
-              style={{ height: "140px" }}
+              className="flex gap-3 h-[100px] sm:h-[120px] lg:h-[140px]"
               onMouseEnter={() => setHoverPaused(true)}
               onMouseLeave={() => setHoverPaused(false)}
             >

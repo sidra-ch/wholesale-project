@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 const LOGO_URL =
-  "https://res.cloudinary.com/dfixnhqn0/image/upload/q_auto/f_auto/v1774637471/logo-img_t6qfjg.jpg";
+  "/images/logo.jpg";
 
 export default function AdminSettingsPage() {
   const { user } = useAuthStore();
@@ -69,7 +69,7 @@ export default function AdminSettingsPage() {
     }
     setSaving(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://arslanwholesale.alwaysdata.net/api";
       const token = localStorage.getItem("auth_token");
       const res = await fetch(`${apiUrl}/user/password`, {
         method: "PUT",
@@ -125,7 +125,7 @@ export default function AdminSettingsPage() {
           <div>
             <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Store Logo</p>
             <p className="text-xs text-gray-400 dark:text-gray-500">
-              Managed via Cloudinary dashboard
+              Static logo from /images/logo.jpg
             </p>
           </div>
         </div>

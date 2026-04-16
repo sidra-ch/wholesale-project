@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 
 const LOGO_URL =
-  "https://res.cloudinary.com/dfixnhqn0/image/upload/q_auto/f_auto/v1774637471/logo-img_t6qfjg.jpg";
+  "/images/logo.jpg";
 
 const navGroups = [
   {

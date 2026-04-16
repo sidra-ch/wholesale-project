@@ -31,7 +31,7 @@ export function QuantitySelector({
           const v = parseInt(e.target.value) || min;
           onChange(Math.min(max, Math.max(min, v)));
         }}
-        className="w-16 text-center text-sm font-medium border-x border-gray-200 py-2 outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="w-12 sm:w-16 text-center text-sm font-medium border-x border-gray-200 py-2 outline-none bg-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
       />
       <button
         onClick={() => onChange(Math.min(max, value + 1))}

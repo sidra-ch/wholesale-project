@@ -55,7 +55,7 @@ export default function DashboardLayout({
   return (
     <section className="py-6 lg:py-10">
       <Container>
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
           {/* Sidebar */}
           <aside className="w-full lg:w-64 shrink-0">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 lg:sticky lg:top-24">

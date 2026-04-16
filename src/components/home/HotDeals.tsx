@@ -2,15 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { Container } from "@/components/layout/Container";
-import { fetchFeaturedProducts } from "@/lib/api-data";
+import { fetchProducts } from "@/lib/api-data";
 import type { Product } from "@/lib/types";
 import Link from "next/link";
-import Image from "next/image";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { ArrowRight, ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useAuthStore } from "@/store/auth";
 import { toast } from "@/components/ui/Toaster";
-import { cloudinaryUrl } from "@/lib/cloudinary";
 import { useScrollFadeUp } from "@/hooks/useGSAPScroll";
 
 export function HotDeals() {
@@ -21,7 +20,7 @@ export function HotDeals() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   useEffect(() => {
-    fetchFeaturedProducts().then((p) => setProducts(p.filter((x) => x.comparePrice)));
+    fetchProducts({ per_page: 8 }).then((res) => setProducts(res.products));
   }, []);
 
   const handleAdd = (product: Product) => {
@@ -68,15 +67,14 @@ export function HotDeals() {
                   {/* Image */}
                   <Link
                     href={`/products/${product.slug}`}
-                    className="block relative aspect-square bg-[#FFF6EF] overflow-hidden"
+                    className="block relative aspect-[4/5] bg-[#FFF6EF] overflow-hidden"
                   >
-                    <Image
-                      src={cloudinaryUrl(product.images[0], { width: 400, height: 400, crop: "fill" })}
+                    <SafeImage
+                      src={product.images[0]}
                       alt={product.name}
                       fill
-                      className="object-contain p-4 transition-transform duration-500 group-hover:scale-110"
-                      sizes="220px"
-                      unoptimized
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     />
                     {/* Discount badge */}
                     {discount > 0 && (
@@ -95,11 +93,11 @@ export function HotDeals() {
                     </Link>
                     <div className="flex items-baseline gap-2 mt-2">
                       <span className="text-candy text-lg font-extrabold">
-                        PKR {Math.round(product.price * 100).toLocaleString()}
+                        Rs {product.price.toFixed(2)}
                       </span>
                       {product.comparePrice && (
                         <span className="text-[#9A8B86] text-xs line-through">
-                          PKR {Math.round(product.comparePrice * 100).toLocaleString()}
+                          Rs {product.comparePrice.toFixed(2)}
                         </span>
                       )}
                     </div>

@@ -31,7 +31,8 @@ interface DashboardData {
     total_products: number;
     total_customers: number;
     pending_orders: number;
-    low_stock: number;
+    low_stock_products: number;
+    pending_customers: number;
   };
   recent_orders: Array<{
     id: number;
@@ -150,7 +151,7 @@ export default function AdminDashboard() {
   const kpiCards = [
     {
       label: "Total Revenue",
-      value: `$${stats.total_revenue.toLocaleString()}`,
+      value: `Rs ${stats.total_revenue.toLocaleString()}`,
       change: "+12.5%",
       trend: "up" as const,
       icon: DollarSign,
@@ -197,7 +198,7 @@ export default function AdminDashboard() {
     },
     {
       label: "Low Stock Items",
-      value: stats.low_stock,
+      value: stats.low_stock_products,
       icon: AlertTriangle,
       color: "text-red-500",
       bg: "bg-red-500/10",
@@ -334,8 +335,7 @@ export default function AdminDashboard() {
                   className="flex-1 flex flex-col items-center gap-2 group"
                 >
                   <span className="text-[10px] text-gray-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                    $
-                    {m.revenue >= 1000
+                    Rs {m.revenue >= 1000
                       ? `${(m.revenue / 1000).toFixed(1)}k`
                       : m.revenue}
                   </span>
@@ -494,7 +494,7 @@ export default function AdminDashboard() {
                       })}
                     </td>
                     <td className="py-3.5 px-3 text-right font-semibold text-gray-900 dark:text-white text-[13px]">
-                      ${parseFloat(order.total).toFixed(2)}
+                      Rs {parseFloat(order.total).toFixed(2)}
                     </td>
                     <td className="py-3.5 px-5 sm:px-6 text-center">
                       <span

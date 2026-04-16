@@ -41,7 +41,7 @@ export default function ContactPage() {
       <Breadcrumb items={[{ label: "Contact" }]} />
       <section className="py-8 lg:py-12">
         <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-12">
             {/* Info */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}

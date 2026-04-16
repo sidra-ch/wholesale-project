@@ -203,10 +203,10 @@ export default function AdminReportsPage() {
               {/* KPI Cards */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  { label: "Total Revenue", value: `$${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "from-[#3B82F6] to-[#6366F1]" },
+                  { label: "Total Revenue", value: `Rs ${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "from-[#3B82F6] to-[#6366F1]" },
                   { label: "Total Orders", value: totalOrders.toLocaleString(), icon: BarChart3, color: "from-[#10B981] to-[#059669]" },
                   { label: "Items Sold", value: totalItems.toLocaleString(), icon: Package, color: "from-[#F59E0B] to-[#D97706]" },
-                  { label: "Avg Order Value", value: `$${avgOrderValue.toFixed(2)}`, icon: ArrowUpRight, color: "from-[#8B5CF6] to-[#7C3AED]" },
+                  { label: "Avg Order Value", value: `Rs ${avgOrderValue.toFixed(2)}`, icon: ArrowUpRight, color: "from-[#8B5CF6] to-[#7C3AED]" },
                 ].map((kpi) => (
                   <div key={kpi.label} className="bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.06] rounded-2xl p-5">
                     <div className="flex items-center justify-between mb-3">

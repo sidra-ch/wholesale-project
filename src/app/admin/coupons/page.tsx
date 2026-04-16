@@ -280,7 +280,7 @@ export default function AdminCouponsPage() {
                         )}
                       </td>
                       <td className="py-3 px-4 text-gray-500 dark:text-gray-400">
-                        {c.min_order_amount ? `$${parseFloat(c.min_order_amount).toFixed(2)}` : "—"}
+                        {c.min_order_amount ? `Rs ${parseFloat(c.min_order_amount).toFixed(2)}` : "—"}
                       </td>
                       <td className="py-3 px-4 text-center text-gray-500 dark:text-gray-400">
                         {c.used_count}{c.usage_limit ? `/${c.usage_limit}` : ""}
@@ -380,7 +380,7 @@ export default function AdminCouponsPage() {
                     className="w-full px-4 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.06] rounded-xl text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                   >
                     <option value="percentage">Percentage (%)</option>
-                    <option value="fixed">Fixed Amount ($)</option>
+                    <option value="fixed">Fixed Amount (Rs)</option>
                   </select>
                 </div>
                 <div>
