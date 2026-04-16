@@ -9,6 +9,7 @@ import { WhatsAppScrollPopup } from "@/components/ui/WhatsAppScrollPopup";
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
+  const isDashboard = pathname.startsWith("/dashboard");
 
   if (isAdmin) {
     return <>{children}</>;
@@ -18,7 +19,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
     <>
       <Navbar />
       <main className="flex-1">{children}</main>
-      <Footer />
+      {!isDashboard && <Footer />}
       <FloatingWhatsApp />
       <WhatsAppScrollPopup />
     </>
