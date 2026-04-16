@@ -280,3 +280,138 @@ export async function deleteCoupon(id: number) {
   return res.data;
 }
 
+// ── Settings ──
+export async function fetchSettings() {
+  const res = await api.get("/admin/settings");
+  return res.data;
+}
+
+export async function updateSettings(data: Record<string, string>) {
+  const res = await api.put("/admin/settings", data);
+  return res.data;
+}
+
+// ── Suppliers ──
+export async function fetchSuppliers(params?: {
+  search?: string;
+  status?: string;
+  page?: number;
+  per_page?: number;
+}) {
+  const res = await api.get("/admin/suppliers", { params });
+  return res.data;
+}
+
+export async function createSupplier(data: Record<string, unknown>) {
+  const res = await api.post("/admin/suppliers", data);
+  return res.data;
+}
+
+export async function fetchSupplier(id: number) {
+  const res = await api.get(`/admin/suppliers/${id}`);
+  return res.data;
+}
+
+export async function updateSupplier(id: number, data: Record<string, unknown>) {
+  const res = await api.put(`/admin/suppliers/${id}`, data);
+  return res.data;
+}
+
+export async function deleteSupplier(id: number) {
+  const res = await api.delete(`/admin/suppliers/${id}`);
+  return res.data;
+}
+
+// ── Purchase Orders ──
+export async function fetchPurchaseOrders(params?: {
+  search?: string;
+  status?: string;
+  supplier_id?: number;
+  page?: number;
+  per_page?: number;
+}) {
+  const res = await api.get("/admin/purchase-orders", { params });
+  return res.data;
+}
+
+export async function createPurchaseOrder(data: Record<string, unknown>) {
+  const res = await api.post("/admin/purchase-orders", data);
+  return res.data;
+}
+
+export async function fetchPurchaseOrder(id: number) {
+  const res = await api.get(`/admin/purchase-orders/${id}`);
+  return res.data;
+}
+
+export async function updatePurchaseOrder(id: number, data: Record<string, unknown>) {
+  const res = await api.put(`/admin/purchase-orders/${id}`, data);
+  return res.data;
+}
+
+export async function receivePurchaseOrder(id: number, data: { items: Array<{ id: number; received_quantity: number }> }) {
+  const res = await api.post(`/admin/purchase-orders/${id}/receive`, data);
+  return res.data;
+}
+
+export async function deletePurchaseOrder(id: number) {
+  const res = await api.delete(`/admin/purchase-orders/${id}`);
+  return res.data;
+}
+
+// ── Admin Users & Roles (RBAC) ──
+export async function fetchMyPermissions() {
+  const res = await api.get("/admin/my-permissions");
+  return res.data;
+}
+
+export async function fetchRoles() {
+  const res = await api.get("/admin/roles");
+  return res.data;
+}
+
+export async function createRole(data: Record<string, unknown>) {
+  const res = await api.post("/admin/roles", data);
+  return res.data;
+}
+
+export async function updateRole(id: number, data: Record<string, unknown>) {
+  const res = await api.put(`/admin/roles/${id}`, data);
+  return res.data;
+}
+
+export async function deleteRole(id: number) {
+  const res = await api.delete(`/admin/roles/${id}`);
+  return res.data;
+}
+
+export async function fetchPermissions() {
+  const res = await api.get("/admin/permissions");
+  return res.data;
+}
+
+export async function fetchAdminUsers(params?: {
+  search?: string;
+  role?: string;
+  page?: number;
+  per_page?: number;
+}) {
+  const res = await api.get("/admin/admin-users", { params });
+  return res.data;
+}
+
+export async function createAdminUser(data: Record<string, unknown>) {
+  const res = await api.post("/admin/admin-users", data);
+  return res.data;
+}
+
+export async function updateAdminUser(id: number, data: Record<string, unknown>) {
+  const res = await api.put(`/admin/admin-users/${id}`, data);
+  return res.data;
+}
+
+export async function deleteAdminUser(id: number) {
+  const res = await api.delete(`/admin/admin-users/${id}`);
+  return res.data;
+}
+

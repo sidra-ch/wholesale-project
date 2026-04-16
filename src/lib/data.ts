@@ -1,8 +1,11 @@
 import type { Product, Category } from "./types";
 
-// Helper to build local image path (served from Next.js public folder)
+const CLD = "https://res.cloudinary.com/dfixnhqn0/image/upload";
+const CLD_VIDEO = "https://res.cloudinary.com/dfixnhqn0/video/upload";
+
+// Helper to build Cloudinary image URL
 function img(n: number): string {
-  return `/images/img${n}.jpeg`;
+  return `${CLD}/q_auto/f_auto/wholesale/gallery/img${n}`;
 }
 
 // All available image numbers (img37 and img43 don't exist)
@@ -12,20 +15,19 @@ const IMAGE_NUMBERS = [
   40, 41, 42, 44,
 ];
 
-// Full pool of all backend images
+// Full pool of all Cloudinary images
 export const IMAGE_POOL = IMAGE_NUMBERS.map((n) => img(n));
 
-// Video pool (local + Cloudinary)
+// Video pool (all on Cloudinary)
 export const VIDEO_POOL = [
-  "/images/video1.mp4",
-  "/images/video2.mp4",
-  "/images/video3.mp4",
-  "/images/video4.mp4",
-  "https://res.cloudinary.com/dfixnhqn0/video/upload/q_auto/f_auto/v1775306360/P14SJEsZQjk5AQRpYw___8_rp3zeo.mp4",
+  `${CLD_VIDEO}/q_auto/wholesale/videos/video1.mp4`,
+  `${CLD_VIDEO}/q_auto/wholesale/videos/video2.mp4`,
+  `${CLD_VIDEO}/q_auto/wholesale/videos/video3.mp4`,
+  `${CLD_VIDEO}/q_auto/wholesale/videos/video4.mp4`,
 ];
 
 // Hero fallback image
-export const HERO_FALLBACK = "/images/hero-2.webp";
+export const HERO_FALLBACK = `${CLD}/q_auto/f_auto/wholesale/gallery/hero-2`;
 
 // Shuffle utility (Fisher-Yates)
 function shuffle<T>(arr: T[]): T[] {

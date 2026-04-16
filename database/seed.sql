@@ -29,14 +29,14 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password`, `role`, `status
 -- Categories
 -- ============================================================
 INSERT INTO `categories` (`id`, `parent_id`, `name`, `slug`, `image`, `sort_order`) VALUES
-(1, NULL, 'Premium Biscuits',    'premium-biscuits',    '/images/categories/biscuits.jpg',    1),
-(2, NULL, 'Chocolate Candies',   'chocolate-candies',   '/images/categories/chocolates.jpg',  2),
-(3, NULL, 'Hard Candies',        'hard-candies',        '/images/categories/hard-candies.jpg',3),
-(4, NULL, 'Gummy & Jellies',     'gummy-jellies',       '/images/categories/gummy.jpg',       4),
-(5, NULL, 'Cream Wafers',        'cream-wafers',        '/images/categories/wafers.jpg',       5),
-(6, NULL, 'Cookies & Crackers',  'cookies-crackers',    '/images/categories/cookies.jpg',      6),
-(7, NULL, 'Snack Packs',         'snack-packs',         '/images/categories/snacks.jpg',       7),
-(8, NULL, 'Gift Packs',          'gift-packs',          '/images/categories/gifts.jpg',        8);
+(1, NULL, 'Premium Biscuits',    'premium-biscuits',    '/images/img25.jpeg',    1),
+(2, NULL, 'Chocolate Candies',   'chocolate-candies',   '/images/img26.jpeg',    2),
+(3, NULL, 'Hard Candies',        'hard-candies',        '/images/img27.jpeg',    3),
+(4, NULL, 'Gummy & Jellies',     'gummy-jellies',       '/images/img28.jpeg',    4),
+(5, NULL, 'Cream Wafers',        'cream-wafers',        '/images/img29.jpeg',    5),
+(6, NULL, 'Cookies & Crackers',  'cookies-crackers',    '/images/img30.jpeg',    6),
+(7, NULL, 'Snack Packs',         'snack-packs',         '/images/img31.jpeg',    7),
+(8, NULL, 'Gift Packs',          'gift-packs',          '/images/img32.jpeg',    8);
 
 -- Sub-categories
 INSERT INTO `categories` (`id`, `parent_id`, `name`, `slug`, `image`, `sort_order`) VALUES
@@ -116,19 +116,30 @@ INSERT INTO `products` (`id`, `category_id`, `name`, `slug`, `sku`, `description
 -- Product Images
 -- ============================================================
 INSERT INTO `product_images` (`product_id`, `image_url`, `alt_text`, `sort_order`) VALUES
-(1,  '/images/products/butter-cookies-1.jpg',     'Royal Butter Cookies front',     0),
-(1,  '/images/products/butter-cookies-2.jpg',     'Royal Butter Cookies open tin',  1),
-(2,  '/images/products/choco-biscuits-1.jpg',     'Chocolate Cream Biscuits pack',  0),
-(3,  '/images/products/milk-choco-bar-1.jpg',     'Belgian Milk Chocolate Bar',     0),
-(4,  '/images/products/dark-truffles-1.jpg',      'Dark Chocolate Truffles box',    0),
-(5,  '/images/products/fruit-candy-1.jpg',        'Fruit Hard Candy Mix bag',       0),
-(6,  '/images/products/mint-drops-1.jpg',         'Mint Drops bag',                 0),
-(7,  '/images/products/gummy-bears-1.jpg',        'Gummy Bear Family Pack',         0),
-(8,  '/images/products/sour-worms-1.jpg',         'Sour Worm Jellies',              0),
-(9,  '/images/products/wafer-rolls-1.jpg',        'Vanilla Cream Wafer Rolls',      0),
-(10, '/images/products/hazelnut-wafer-1.jpg',     'Hazelnut Wafer Bites',           0),
-(11, '/images/products/oat-crackers-1.jpg',       'Oat Digestive Crackers',         0),
-(12, '/images/products/cheese-crackers-1.jpg',    'Cheese Crackers Party Pack',     0);
+(1,  '/images/img1.jpeg',   'Royal Butter Cookies',         0),
+(1,  '/images/img2.jpeg',   'Royal Butter Cookies',         1),
+(2,  '/images/img3.jpeg',   'Chocolate Cream Biscuits',     0),
+(2,  '/images/img4.jpeg',   'Chocolate Cream Biscuits',     1),
+(3,  '/images/img5.jpeg',   'Belgian Milk Chocolate Bar',   0),
+(3,  '/images/img6.jpeg',   'Belgian Milk Chocolate Bar',   1),
+(4,  '/images/img7.jpeg',   'Dark Chocolate Truffles',      0),
+(4,  '/images/img8.jpeg',   'Dark Chocolate Truffles',      1),
+(5,  '/images/img9.jpeg',   'Fruit Hard Candy Mix',         0),
+(5,  '/images/img10.jpeg',  'Fruit Hard Candy Mix',         1),
+(6,  '/images/img11.jpeg',  'Mint Drops',                   0),
+(6,  '/images/img12.jpeg',  'Mint Drops',                   1),
+(7,  '/images/img13.jpeg',  'Gummy Bear Family Pack',       0),
+(7,  '/images/img14.jpeg',  'Gummy Bear Family Pack',       1),
+(8,  '/images/img15.jpeg',  'Sour Worm Jellies',            0),
+(8,  '/images/img16.jpeg',  'Sour Worm Jellies',            1),
+(9,  '/images/img17.jpeg',  'Vanilla Cream Wafer Rolls',    0),
+(9,  '/images/img18.jpeg',  'Vanilla Cream Wafer Rolls',    1),
+(10, '/images/img19.jpeg',  'Hazelnut Wafer Bites',         0),
+(10, '/images/img20.jpeg',  'Hazelnut Wafer Bites',         1),
+(11, '/images/img21.jpeg',  'Oat Digestive Crackers',       0),
+(11, '/images/img22.jpeg',  'Oat Digestive Crackers',       1),
+(12, '/images/img23.jpeg',  'Cheese Crackers Party Pack',   0),
+(12, '/images/img24.jpeg',  'Cheese Crackers Party Pack',   1);
 
 -- ============================================================
 -- Addresses

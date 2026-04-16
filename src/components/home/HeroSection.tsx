@@ -225,14 +225,14 @@ export function HeroSection() {
             <div ref={ctaRef} style={{ opacity: 0 }} className="mt-10 flex flex-wrap items-center gap-4">
               <Link
                 href="/products"
-                className="group relative inline-flex items-center gap-2.5 px-8 py-4 bg-candy hover:bg-[#C62828] text-white rounded-[16px] font-medium text-[15px] transition-all duration-300 shadow-[0_10px_30px_rgba(229,57,53,0.08)] hover:shadow-[0_12px_35px_rgba(229,57,53,0.2)] hover:-translate-y-0.5"
+                className="group relative inline-flex items-center gap-2.5 px-6 sm:px-8 py-3 sm:py-4 bg-candy hover:bg-[#C62828] text-white rounded-[16px] font-medium text-[15px] transition-all duration-300 shadow-[0_10px_30px_rgba(229,57,53,0.08)] hover:shadow-[0_12px_35px_rgba(229,57,53,0.2)] hover:-translate-y-0.5"
               >
                 Explore Products
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/products"
-                className="group inline-flex items-center gap-2.5 px-8 py-4 bg-white hover:bg-[#FFE2E2] text-[#2E1B12] rounded-[16px] font-medium text-[15px] transition-all duration-300 shadow-[0_12px_35px_rgba(0,0,0,0.06)] border border-[#F2D6D6] hover:-translate-y-0.5"
+                className="group inline-flex items-center gap-2.5 px-6 sm:px-8 py-3 sm:py-4 bg-white hover:bg-[#FFE2E2] text-[#2E1B12] rounded-[16px] font-medium text-[15px] transition-all duration-300 shadow-[0_12px_35px_rgba(0,0,0,0.06)] border border-[#F2D6D6] hover:-translate-y-0.5"
               >
                 <ShoppingBag className="h-4 w-4 text-candy" />
                 Order Now
@@ -263,7 +263,7 @@ export function HeroSection() {
             </div>
 
             {/* Stats Row */}
-            <div ref={statsRef} style={{ opacity: 0 }} className="mt-8 flex items-center gap-8 lg:gap-10">
+            <div ref={statsRef} style={{ opacity: 0 }} className="mt-8 flex items-center gap-4 sm:gap-8 lg:gap-10">
               {[
                 { value: "2K+", label: "Products", icon: Package },
                 { value: "500+", label: "Retailers", icon: TrendingUp },

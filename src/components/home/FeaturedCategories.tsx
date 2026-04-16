@@ -44,7 +44,7 @@ export function FeaturedCategories() {
           {categories.slice(0, 5).map((cat) => (
             <div
               key={cat.id}
-              className="gsap-fade-up min-w-[200px] lg:min-w-0"
+              className="gsap-fade-up min-w-[160px] sm:min-w-[200px] lg:min-w-0"
             >
               <Link
                 href={`/products?category=${cat.slug}`}

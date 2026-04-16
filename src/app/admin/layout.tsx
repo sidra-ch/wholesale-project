@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuthStore } from "@/store/auth";
 import { useHydration } from "@/hooks/useHydration";
+import { fetchMyPermissions } from "@/lib/admin-api";
 import {
   LayoutDashboard,
   Package,
@@ -30,6 +31,9 @@ import {
   ScrollText,
   Layers,
   Ticket,
+  Truck,
+  ClipboardList,
+  Shield,
 } from "lucide-react";
 
 const LOGO_URL =
@@ -38,38 +42,52 @@ const LOGO_URL =
 const navGroups = [
   {
     label: "Overview",
-    items: [{ href: "/admin", label: "Dashboard", icon: LayoutDashboard }],
+    permission: "view_dashboard",
+    items: [{ href: "/admin", label: "Dashboard", icon: LayoutDashboard, permission: "view_dashboard" }],
   },
   {
     label: "Management",
+    permission: null,
     items: [
-      { href: "/admin/products", label: "Products", icon: Package },
-      { href: "/admin/categories", label: "Categories", icon: FolderTree },
-      { href: "/admin/subcategories", label: "Subcategories", icon: Layers },
-      { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
-      { href: "/admin/customers", label: "Customers", icon: Users },
-      { href: "/admin/inventory", label: "Inventory", icon: Warehouse },
+      { href: "/admin/products", label: "Products", icon: Package, permission: "view_products" },
+      { href: "/admin/categories", label: "Categories", icon: FolderTree, permission: "view_categories" },
+      { href: "/admin/subcategories", label: "Subcategories", icon: Layers, permission: "view_categories" },
+      { href: "/admin/orders", label: "Orders", icon: ShoppingCart, permission: "view_orders" },
+      { href: "/admin/customers", label: "Customers", icon: Users, permission: "view_customers" },
+      { href: "/admin/inventory", label: "Inventory", icon: Warehouse, permission: "view_inventory" },
+    ],
+  },
+  {
+    label: "Supply Chain",
+    permission: null,
+    items: [
+      { href: "/admin/suppliers", label: "Suppliers", icon: Truck, permission: "view_suppliers" },
+      { href: "/admin/purchase-orders", label: "Purchase Orders", icon: ClipboardList, permission: "view_purchases" },
     ],
   },
   {
     label: "Finance",
+    permission: null,
     items: [
-      { href: "/admin/payments", label: "Payments", icon: CreditCard },
-      { href: "/admin/coupons", label: "Coupons", icon: Ticket },
+      { href: "/admin/payments", label: "Payments", icon: CreditCard, permission: "view_payments" },
+      { href: "/admin/coupons", label: "Coupons", icon: Ticket, permission: "view_coupons" },
     ],
   },
   {
     label: "Analytics",
+    permission: null,
     items: [
-      { href: "/admin/reports", label: "Reports", icon: FileBarChart },
+      { href: "/admin/reports", label: "Reports", icon: FileBarChart, permission: "view_reports" },
     ],
   },
   {
     label: "System",
+    permission: null,
     items: [
-      { href: "/admin/activity-logs", label: "Activity Logs", icon: ScrollText },
-      { href: "/admin/notifications", label: "Notifications", icon: Bell },
-      { href: "/admin/settings", label: "Settings", icon: Settings },
+      { href: "/admin/admin-users", label: "Admin Users", icon: Shield, permission: "view_admin_users" },
+      { href: "/admin/activity-logs", label: "Activity Logs", icon: ScrollText, permission: "view_activity_logs" },
+      { href: "/admin/notifications", label: "Notifications", icon: Bell, permission: "view_notifications" },
+      { href: "/admin/settings", label: "Settings", icon: Settings, permission: "manage_settings" },
     ],
   },
 ];
@@ -82,15 +100,27 @@ export default function AdminLayout({
   const router = useRouter();
   const pathname = usePathname();
   const hydrated = useHydration();
-  const { user, isAdmin, isAuthenticated, loadFromStorage, logout } =
+  const { user, isAdmin, isAuthenticated, loadFromStorage, logout, setPermissions, hasPermission } =
     useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [dark, setDark] = useState(false);
+  const [permissionsLoaded, setPermissionsLoaded] = useState(false);
 
   useEffect(() => {
     loadFromStorage();
   }, [loadFromStorage]);
+
+  useEffect(() => {
+    if (hydrated && isAuthenticated && isAdmin && !permissionsLoaded) {
+      fetchMyPermissions()
+        .then((data) => {
+          setPermissions(data.permissions || [], data.roles || []);
+          setPermissionsLoaded(true);
+        })
+        .catch(() => setPermissionsLoaded(true));
+    }
+  }, [hydrated, isAuthenticated, isAdmin, permissionsLoaded, setPermissions]);
 
   useEffect(() => {
     if (hydrated && (!isAuthenticated || !isAdmin)) {
@@ -186,7 +216,12 @@ export default function AdminLayout({
 
         {/* Navigation */}
         <nav className="flex-1 py-4 px-2 overflow-y-auto space-y-6">
-          {navGroups.map((group) => (
+          {navGroups.map((group) => {
+            const visibleItems = group.items.filter((item) =>
+              !item.permission || hasPermission(item.permission)
+            );
+            if (visibleItems.length === 0) return null;
+            return (
             <div key={group.label}>
               {!collapsed && (
                 <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-gray-600 px-3 mb-2">
@@ -194,7 +229,7 @@ export default function AdminLayout({
                 </p>
               )}
               <div className="space-y-0.5">
-                {group.items.map((item) => {
+                {visibleItems.map((item) => {
                   const active =
                     pathname === item.href ||
                     (item.href !== "/admin" && pathname.startsWith(item.href));
@@ -231,7 +266,8 @@ export default function AdminLayout({
                 })}
               </div>
             </div>
-          ))}
+          );
+          })}
         </nav>
 
         {/* User section */}

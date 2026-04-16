@@ -62,7 +62,7 @@ export function HotDeals() {
             return (
               <div
                 key={product.id}
-                className="gsap-fade-up min-w-[220px] lg:min-w-0"
+                className="gsap-fade-up min-w-[160px] sm:min-w-[220px] lg:min-w-0"
               >
                 <div className="group bg-white rounded-[20px] border border-[#F2D6D6]/50 overflow-hidden hover:shadow-[0_12px_35px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1">
                   {/* Image */}

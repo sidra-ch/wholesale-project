@@ -86,7 +86,7 @@ export function WhyChooseUs() {
 
         <div ref={ref} className="grid lg:grid-cols-2 gap-8">
           {/* Left: 2x2 Feature Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {features.map((f, i) => (
               <div
                 key={i}

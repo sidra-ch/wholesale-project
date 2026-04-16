@@ -2,7 +2,7 @@ import api from "./api";
 import type { Product, Category, ApiProduct, ApiCategory } from "./types";
 import { products as staticProducts, categories as staticCategories } from "./data";
 
-const PLACEHOLDER_IMAGE = "/images/placeholder.png";
+const PLACEHOLDER_IMAGE = "/images/placeholder.svg";
 
 /**
  * Convert an API product to the frontend Product type.
@@ -13,12 +13,16 @@ function mapApiProduct(p: ApiProduct): Product {
       ? p.images.map((img) => img.image_url)
       : [PLACEHOLDER_IMAGE];
 
+  const wholesale = parseFloat(p.wholesale_price);
+  const retail = parseFloat(p.retail_price);
+
   return {
     id: String(p.id),
     name: p.name,
     slug: p.slug,
     description: p.description || p.short_description || "",
-    price: parseFloat(p.retail_price),
+    price: wholesale,
+    comparePrice: retail > wholesale ? retail : undefined,
     images,
     category: p.category?.name || "",
     brand: p.brand || "",
@@ -112,7 +116,8 @@ export async function fetchCategories(): Promise<Category[]> {
   try {
     const res = await api.get("/categories");
     const items: ApiCategory[] = res.data.categories || res.data;
-    return items.map(mapApiCategory);
+    // Only return main categories (no subcategories)
+    return items.filter((c) => !c.parent_id).map(mapApiCategory);
   } catch {
     return staticCategories;
   }

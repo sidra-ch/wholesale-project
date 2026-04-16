@@ -94,9 +94,9 @@ export function CartDrawer() {
                                   item.quantity - 1
                                 )
                               }
-                              className="p-1.5 hover:bg-light-gray"
+                              className="p-2 hover:bg-light-gray"
                             >
-                              <Minus className="h-3 w-3" />
+                              <Minus className="h-3.5 w-3.5" />
                             </button>
                             <span className="px-3 text-xs font-medium">
                               {item.quantity}
@@ -108,9 +108,9 @@ export function CartDrawer() {
                                   item.quantity + 1
                                 )
                               }
-                              className="p-1.5 hover:bg-light-gray"
+                              className="p-2 hover:bg-light-gray"
                             >
-                              <Plus className="h-3 w-3" />
+                              <Plus className="h-3.5 w-3.5" />
                             </button>
                           </div>
                           <span className="text-sm font-bold text-chocolate">
