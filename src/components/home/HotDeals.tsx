@@ -52,9 +52,9 @@ export function HotDeals() {
         {/* Product Cards */}
         <div
           ref={ref}
-          className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide lg:grid lg:grid-cols-5 lg:overflow-visible"
+          className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide lg:grid lg:grid-cols-4 lg:overflow-visible"
         >
-          {products.slice(0, 5).map((product) => {
+          {products.slice(0, 8).map((product) => {
             const discount = product.comparePrice
               ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
               : 0;

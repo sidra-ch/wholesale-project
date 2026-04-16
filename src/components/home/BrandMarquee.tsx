@@ -87,7 +87,7 @@ export function BrandMarquee() {
           }
         }
         .animate-marquee {
-          animation: marquee 40s linear infinite;
+          animation: marquee 80s linear infinite;
           will-change: transform;
         }
       `}</style>

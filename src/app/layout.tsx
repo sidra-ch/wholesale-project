@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { Toaster } from "@/components/ui/Toaster";
 import { LayoutShell } from "@/components/layout/LayoutShell";
+import { PageLoader } from "@/components/ui/PageLoader";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href={faviconUrl} />
       </head>
       <body className="min-h-full flex flex-col font-sans overflow-x-hidden">
+        <PageLoader />
         <LayoutShell>{children}</LayoutShell>
         <CartDrawer />
         <Toaster />
