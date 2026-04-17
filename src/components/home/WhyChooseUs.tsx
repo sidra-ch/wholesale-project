@@ -72,7 +72,7 @@ export function WhyChooseUs() {
   const t = testimonials[activeTestimonial];
 
   return (
-    <section className="py-16 lg:py-20">
+    <section className="py-12 sm:py-14 lg:py-16">
       <Container>
         {/* Header */}
         <div className="mb-10">

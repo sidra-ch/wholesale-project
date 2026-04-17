@@ -45,14 +45,14 @@ export function HowItWorks() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden">
+    <section className="py-14 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Subtle background */}
       <div className="absolute inset-0 bg-gradient-to-b from-white via-[#FFFAF6] to-white" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-candy/10 to-transparent" />
 
       <Container className="relative">
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -22,13 +22,13 @@ export function FeaturedProducts() {
   }, []);
 
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden">
+    <section className="py-14 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Background accent */}
       <div className="absolute inset-0 bg-gradient-to-b from-cream via-light-gray/30 to-cream" />
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-chocolate/10 to-transparent" />
 
       <Container className="relative">
-        <div className="flex items-end justify-between mb-14">
+        <div className="flex items-end justify-between mb-10">
           <SectionHeading
             badge="Best Sellers"
             title="Featured Products"

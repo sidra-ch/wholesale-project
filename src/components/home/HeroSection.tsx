@@ -50,6 +50,18 @@ export function HeroSection() {
   useEffect(() => {
     if (gridImages.length === 0) return;
 
+    // Set initial hidden state via GSAP (not inline style) to avoid hydration mismatch
+    const targets = [
+      badgeRef.current,
+      headingRef.current,
+      paraRef.current,
+      ctaRef.current,
+      statsRef.current,
+      trustRef.current,
+      heroRightRef.current,
+    ].filter(Boolean);
+    gsap.set(targets, { opacity: 0 });
+
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
     tl.fromTo(
@@ -167,7 +179,7 @@ export function HeroSection() {
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative min-h-[90vh] bg-[#FFF6EF] overflow-hidden"
+      className="relative bg-[#FFF6EF] overflow-hidden"
     >
       {/* Cursor glow — hero only */}
       <div ref={cursorGlowRef} className="cursor-glow hidden lg:block" style={{ opacity: 0 }} />
@@ -181,11 +193,11 @@ export function HeroSection() {
       </div>
 
       <Container className="relative z-10">
-        <div className="flex flex-col lg:flex-row gap-10 xl:gap-16 items-center min-h-[90vh] py-20 lg:py-0">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 xl:gap-16 items-center pt-8 pb-12 sm:pt-10 sm:pb-14 lg:pt-14 lg:pb-16">
           {/* ─── LEFT: Text Content ─── */}
-          <div className="w-full lg:w-[48%] lg:flex-shrink-0">
+          <div className="w-full lg:w-[48%] lg:flex-shrink-0 text-center lg:text-left">
             {/* Badge */}
-            <div ref={badgeRef} style={{ opacity: 0 }}>
+            <div ref={badgeRef}>
               <span className="inline-flex items-center gap-2 bg-[#FFECEC] text-candy text-xs font-bold tracking-widest uppercase px-5 py-2.5 rounded-full border border-candy/20">
                 ⭐ Pakistan&apos;s #1 Wholesale Platform
               </span>
@@ -194,8 +206,7 @@ export function HeroSection() {
             {/* Main Heading */}
             <h1
               ref={headingRef}
-              style={{ opacity: 0 }}
-              className="mt-8 text-[36px] sm:text-[44px] lg:text-[48px] xl:text-[52px] font-extrabold leading-[1.08] tracking-tight text-[#2E1B12]"
+              className="mt-5 sm:mt-6 text-[32px] sm:text-[40px] lg:text-[48px] xl:text-[52px] font-extrabold leading-[1.08] tracking-tight text-[#2E1B12]"
             >
               Grow Your Store
               <br />
@@ -212,8 +223,7 @@ export function HeroSection() {
             {/* Subheading */}
             <p
               ref={paraRef}
-              style={{ opacity: 0 }}
-              className="mt-6 text-[16px] lg:text-[18px] text-[#6B5B55] leading-relaxed max-w-lg"
+              className="mt-4 sm:mt-5 text-[14px] sm:text-[16px] lg:text-[18px] text-[#6B5B55] leading-relaxed max-w-lg mx-auto lg:mx-0"
             >
               Premium biscuits, candies &amp; snacks from{" "}
               <span className="text-[#2E1B12] font-semibold">50+ top brands</span>.
@@ -222,7 +232,7 @@ export function HeroSection() {
             </p>
 
             {/* CTA */}
-            <div ref={ctaRef} style={{ opacity: 0 }} className="mt-10 flex flex-wrap items-center gap-4">
+            <div ref={ctaRef} className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4">
               <Link
                 href="/products"
                 className="group relative inline-flex items-center gap-2.5 px-6 sm:px-8 py-3 sm:py-4 bg-candy hover:bg-[#C62828] text-white rounded-[16px] font-medium text-[15px] transition-all duration-300 shadow-[0_10px_30px_rgba(229,57,53,0.08)] hover:shadow-[0_12px_35px_rgba(229,57,53,0.2)] hover:-translate-y-0.5"
@@ -240,7 +250,7 @@ export function HeroSection() {
             </div>
 
             {/* Trust row */}
-            <div ref={trustRef} style={{ opacity: 0 }} className="mt-10 flex items-center gap-3">
+            <div ref={trustRef} className="mt-6 sm:mt-8 flex items-center justify-center lg:justify-start gap-3">
               <div className="flex -space-x-2">
                 {gridImages.slice(0, 4).map((src, i) => (
                   <div key={i} className="relative w-9 h-9 rounded-full border-2 border-white overflow-hidden shadow-sm">
@@ -263,7 +273,7 @@ export function HeroSection() {
             </div>
 
             {/* Stats Row */}
-            <div ref={statsRef} style={{ opacity: 0 }} className="mt-8 flex items-center gap-4 sm:gap-8 lg:gap-10">
+            <div ref={statsRef} className="mt-6 sm:mt-8 flex items-center justify-center lg:justify-start gap-4 sm:gap-8 lg:gap-10">
               {[
                 { value: "2K+", label: "Products", icon: Package },
                 { value: "500+", label: "Retailers", icon: TrendingUp },
@@ -285,11 +295,10 @@ export function HeroSection() {
           {/* ─── RIGHT: Bento Media Grid ─── */}
           <div
             ref={heroRightRef}
-            style={{ opacity: 0 }}
-            className="relative hidden lg:flex flex-col gap-3 w-full lg:w-[52%] lg:flex-shrink-0"
+            className="relative flex flex-col gap-3 w-full lg:w-[52%] lg:flex-shrink-0"
           >
             {/* Top row: Video + Image carousel */}
-            <div className="flex gap-3 h-[280px] sm:h-[340px] lg:h-[380px]">
+            <div className="flex gap-3 h-[220px] sm:h-[300px] lg:h-[380px]">
               {/* Main video — large tile */}
               <div className="flex-[2] rounded-[28px] overflow-hidden relative group shadow-[0_12px_35px_rgba(0,0,0,0.06)] min-w-0">
                 {mainVideo && (
@@ -336,7 +345,7 @@ export function HeroSection() {
               </div>
 
               {/* Right column: image carousel */}
-              <div className="w-[180px] flex-shrink-0 rounded-[28px] overflow-hidden relative shadow-[0_12px_35px_rgba(0,0,0,0.06)] bg-white">
+              <div className="hidden sm:block w-[140px] sm:w-[160px] lg:w-[180px] flex-shrink-0 rounded-[28px] overflow-hidden relative shadow-[0_12px_35px_rgba(0,0,0,0.06)] bg-white">
                 <AnimatePresence mode="wait">
                   {gridImages[activeSlide] && (
                     <motion.div
@@ -376,7 +385,7 @@ export function HeroSection() {
 
             {/* Bottom row: 3 auto-rotating image tiles with dot indicators */}
             <div
-              className="flex gap-3 h-[100px] sm:h-[120px] lg:h-[140px]"
+              className="flex gap-2 sm:gap-3 h-[80px] sm:h-[100px] lg:h-[140px]"
               onMouseEnter={() => setHoverPaused(true)}
               onMouseLeave={() => setHoverPaused(false)}
             >

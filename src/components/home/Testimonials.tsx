@@ -35,7 +35,7 @@ const testimonials = [
 
 export function Testimonials() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden">
+    <section className="py-16 sm:py-20 lg:py-24 relative overflow-hidden">
       {/* Dark premium background */}
       <div className="absolute inset-0 bg-gradient-to-br from-chocolate via-[#2a1509] to-chocolate" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
@@ -53,7 +53,7 @@ export function Testimonials() {
           light
         />
 
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7 mt-10 sm:mt-16">
+        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7 mt-8 sm:mt-10">
           {testimonials.map((t, i) => (
             <StaggerItem key={i}>
               <motion.div

@@ -46,7 +46,7 @@ export function BrandMarquee() {
   const sectionRef = useScrollFadeUp(".gsap-fade-up", 0.1, 20);
 
   return (
-    <section className="py-8 sm:py-10 mt-6 sm:mt-10" ref={sectionRef}>
+    <section className="py-6 sm:py-8" ref={sectionRef}>
       <Container>
         <p className="gsap-fade-up text-center text-xs font-bold tracking-widest uppercase text-candy mb-5">
           Trusted Pakistani Brands
@@ -75,22 +75,6 @@ export function BrandMarquee() {
           </div>
         </div>
       </div>
-
-      {/* Inline keyframes — scoped to this component */}
-      <style jsx>{`
-        @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
-        }
-        .animate-marquee {
-          animation: marquee 120s linear infinite;
-          will-change: transform;
-        }
-      `}</style>
     </section>
   );
 }

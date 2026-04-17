@@ -8,7 +8,7 @@ import { ScrollReveal, MagneticButton } from "@/components/motion";
 
 export function CTASection() {
   return (
-    <section className="py-24 lg:py-36 relative overflow-hidden">
+    <section className="py-16 sm:py-20 lg:py-24 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-candy via-red-500 to-red-600" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:40px_40px]" />

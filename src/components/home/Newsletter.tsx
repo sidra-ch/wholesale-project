@@ -8,7 +8,7 @@ export function Newsletter() {
   const ref = useScrollFadeUp(".gsap-fade-up", 0.1, 20);
 
   return (
-    <section className="py-10 lg:py-14">
+    <section className="py-10 sm:py-12 lg:py-14">
       <Container>
         <div
           ref={ref}
