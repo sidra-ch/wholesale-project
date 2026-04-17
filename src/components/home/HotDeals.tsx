@@ -20,7 +20,7 @@ export function HotDeals() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   useEffect(() => {
-    fetchProducts({ per_page: 8 }).then((res) => setProducts(res.products));
+    fetchProducts({ perPage: 8 }).then((res) => setProducts(res.products));
   }, []);
 
   const handleAdd = (product: Product) => {

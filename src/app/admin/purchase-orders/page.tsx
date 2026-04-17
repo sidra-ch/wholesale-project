@@ -13,34 +13,35 @@ import {
 
 interface POItem {
   id?: number;
-  product_id: number;
+  productId: number;
   product?: { id: number; name: string; sku: string; stock?: number };
   quantity: number;
-  received_quantity: number;
-  unit_cost: number;
-  total_cost: number;
+  receivedQuantity: number;
+  unitPrice: number;
+  subtotal: number;
+  productName?: string;
 }
 
 interface PurchaseOrder {
   id: number;
-  po_number: string;
-  supplier_id: number;
+  poNumber: string;
+  supplierId: number;
   supplier?: { id: number; name: string };
   creator?: { id: number; name: string };
   status: "draft" | "sent" | "partial" | "received" | "cancelled";
   subtotal: string;
-  tax_amount: string;
-  shipping_cost: string;
-  total_amount: string;
+  taxAmount: string;
+  shippingCost: string;
+  totalAmount: string;
   notes: string | null;
-  expected_date: string | null;
-  received_at: string | null;
+  expectedAt: string | null;
+  receivedAt: string | null;
   items?: POItem[];
-  created_at: string;
+  createdAt: string;
 }
 
 interface SupplierOption { id: number; name: string }
-interface ProductOption { id: number; name: string; sku: string; cost_price: string }
+interface ProductOption { id: number; name: string; sku: string; costPrice: string }
 
 const statusColors: Record<string, string> = {
   draft: "bg-gray-200/80 dark:bg-white/[0.06] text-gray-600 dark:text-gray-400",
@@ -86,9 +87,9 @@ export default function PurchaseOrdersPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetchPurchaseOrders({ search, status: statusFilter || undefined, page, per_page: 15 });
+      const res = await fetchPurchaseOrders({ search, status: statusFilter || undefined, page, perPage: 15 });
       setOrders(res.data);
-      setLastPage(res.last_page);
+      setLastPage(res.lastPage || res.last_page || 1);
       setTotal(res.total);
     } catch { showToast("error", "Failed to load purchase orders"); }
     setLoading(false);
@@ -99,11 +100,11 @@ export default function PurchaseOrdersPage() {
   const loadOptions = async () => {
     try {
       const [supRes, prodRes] = await Promise.all([
-        fetchSuppliers({ per_page: 100 }),
-        fetchAdminProducts({ per_page: 200 }),
+        fetchSuppliers({ perPage: 100 }),
+        fetchAdminProducts({ perPage: 200 }),
       ]);
       setSuppliers(supRes.data?.map((s: SupplierOption) => ({ id: s.id, name: s.name })) || []);
-      setProducts(prodRes.data?.map((p: ProductOption) => ({ id: p.id, name: p.name, sku: p.sku, cost_price: p.cost_price })) || []);
+      setProducts(prodRes.data?.map((p: ProductOption) => ({ id: p.id, name: p.name, sku: p.sku, costPrice: p.costPrice })) || []);
     } catch {}
   };
 
@@ -152,9 +153,9 @@ export default function PurchaseOrdersPage() {
     if (!po.items) return;
     setReceiveItems(po.items.map((item) => ({
       id: item.id!,
-      name: item.product?.name || `Product #${item.product_id}`,
+      name: item.productName || item.product?.name || `Product #${item.productId}`,
       ordered: item.quantity,
-      received: item.received_quantity,
+      received: item.receivedQuantity,
       receiving: 0,
     })));
     setShowReceive(po);
@@ -260,18 +261,18 @@ export default function PurchaseOrdersPage() {
               <tbody>
                 {orders.map((po) => (
                   <tr key={po.id} className="border-b border-gray-50 dark:border-white/[0.03] hover:bg-gray-50/50 dark:hover:bg-white/[0.02]">
-                    <td className="py-3.5 px-5 font-semibold text-gray-900 dark:text-white">{po.po_number}</td>
+                    <td className="py-3.5 px-5 font-semibold text-gray-900 dark:text-white">{po.poNumber}</td>
                     <td className="py-3.5 px-3">
                       <div className="flex items-center gap-2">
                         <Truck className="h-4 w-4 text-gray-400" />
                         <span>{po.supplier?.name || "—"}</span>
                       </div>
                     </td>
-                    <td className="py-3.5 px-3 text-right font-medium hidden md:table-cell">Rs {parseFloat(po.total_amount).toLocaleString()}</td>
+                    <td className="py-3.5 px-3 text-right font-medium hidden md:table-cell">Rs {parseFloat(po.totalAmount).toLocaleString()}</td>
                     <td className="py-3.5 px-3 text-center">
                       <span className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold capitalize ${statusColors[po.status]}`}>{po.status}</span>
                     </td>
-                    <td className="py-3.5 px-3 text-gray-400 text-xs hidden lg:table-cell">{po.expected_date || "—"}</td>
+                    <td className="py-3.5 px-3 text-gray-400 text-xs hidden lg:table-cell">{po.expectedAt || "—"}</td>
                     <td className="py-3.5 px-3 text-center">
                       <div className="flex items-center justify-center gap-1">
                         <button onClick={() => setShowDetail(po)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.06] text-gray-400 hover:text-[#3B82F6]"><Eye className="h-4 w-4" /></button>
@@ -308,18 +309,18 @@ export default function PurchaseOrdersPage() {
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowDetail(null)}>
           <div className="bg-white dark:bg-[#1a1f2e] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{showDetail.po_number}</h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{showDetail.poNumber}</h2>
               <button onClick={() => setShowDetail(null)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.06]"><X className="h-4 w-4" /></button>
             </div>
             <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
               <p><span className="text-gray-500">Supplier:</span> {showDetail.supplier?.name}</p>
               <p><span className="text-gray-500">Status:</span> <span className={`px-2 py-0.5 rounded-md text-xs font-semibold capitalize ${statusColors[showDetail.status]}`}>{showDetail.status}</span></p>
               <p><span className="text-gray-500">Created by:</span> {showDetail.creator?.name}</p>
-              <p><span className="text-gray-500">Expected:</span> {showDetail.expected_date || "—"}</p>
+              <p><span className="text-gray-500">Expected:</span> {showDetail.expectedAt || "—"}</p>
               <p><span className="text-gray-500">Subtotal:</span> Rs {parseFloat(showDetail.subtotal).toFixed(2)}</p>
-              <p><span className="text-gray-500">Tax:</span> Rs {parseFloat(showDetail.tax_amount).toFixed(2)}</p>
-              <p><span className="text-gray-500">Shipping:</span> Rs {parseFloat(showDetail.shipping_cost).toFixed(2)}</p>
-              <p className="font-semibold"><span className="text-gray-500">Total:</span> Rs {parseFloat(showDetail.total_amount).toFixed(2)}</p>
+              <p><span className="text-gray-500">Tax:</span> Rs {parseFloat(showDetail.taxAmount).toFixed(2)}</p>
+              <p><span className="text-gray-500">Shipping:</span> Rs {parseFloat(showDetail.shippingCost).toFixed(2)}</p>
+              <p className="font-semibold"><span className="text-gray-500">Total:</span> Rs {parseFloat(showDetail.totalAmount).toFixed(2)}</p>
             </div>
             {showDetail.notes && <p className="text-sm text-gray-500 mb-4">Notes: {showDetail.notes}</p>}
             {showDetail.items && showDetail.items.length > 0 && (
@@ -338,11 +339,11 @@ export default function PurchaseOrdersPage() {
                   <tbody>
                     {showDetail.items.map((item, i) => (
                       <tr key={i} className="border-b border-gray-50 dark:border-white/[0.03]">
-                        <td className="py-2">{item.product?.name || `#${item.product_id}`}</td>
+                        <td className="py-2">{item.productName || item.product?.name || `#${item.productId}`}</td>
                         <td className="py-2 text-center">{item.quantity}</td>
-                        <td className="py-2 text-center">{item.received_quantity}</td>
-                        <td className="py-2 text-right">Rs {parseFloat(String(item.unit_cost)).toFixed(2)}</td>
-                        <td className="py-2 text-right">Rs {parseFloat(String(item.total_cost)).toFixed(2)}</td>
+                        <td className="py-2 text-center">{item.receivedQuantity}</td>
+                        <td className="py-2 text-right">Rs {parseFloat(String(item.unitPrice)).toFixed(2)}</td>
+                        <td className="py-2 text-right">Rs {parseFloat(String(item.subtotal)).toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -363,7 +364,7 @@ export default function PurchaseOrdersPage() {
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowReceive(null)}>
           <div className="bg-white dark:bg-[#1a1f2e] rounded-2xl w-full max-w-xl max-h-[85vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">Receive Items - {showReceive.po_number}</h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">Receive Items - {showReceive.poNumber}</h2>
               <button onClick={() => setShowReceive(null)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.06]"><X className="h-4 w-4" /></button>
             </div>
             <div className="space-y-3">
@@ -433,7 +434,7 @@ export default function PurchaseOrdersPage() {
                       const pid = +e.target.value;
                       const p = products.find((pr) => pr.id === pid);
                       updateItem(i, "product_id", pid);
-                      if (p) updateItem(i, "unit_cost", parseFloat(p.cost_price) || 0);
+                      if (p) updateItem(i, "unit_cost", parseFloat(p.costPrice) || 0);
                     }} className="flex-1 px-2 py-2 rounded-lg border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] text-sm">
                       <option value={0}>Select product...</option>
                       {products.map((p) => <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>)}
@@ -490,7 +491,7 @@ export default function PurchaseOrdersPage() {
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setDeleteConfirm(null)}>
           <div className="bg-white dark:bg-[#1a1f2e] rounded-2xl w-full max-w-sm p-6" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Delete Purchase Order</h3>
-            <p className="text-sm text-gray-500 mb-6">Delete <strong>{deleteConfirm.po_number}</strong>? This cannot be undone.</p>
+            <p className="text-sm text-gray-500 mb-6">Delete <strong>{deleteConfirm.poNumber}</strong>? This cannot be undone.</p>
             <div className="flex justify-end gap-3">
               <button onClick={() => setDeleteConfirm(null)} className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] text-sm font-medium">Cancel</button>
               <button onClick={handleDelete} className="px-4 py-2.5 bg-red-500 text-white rounded-xl text-sm font-medium hover:bg-red-600">Delete</button>

@@ -26,9 +26,9 @@ import {
 import { SafeImage } from "@/components/ui/SafeImage";
 
 interface ProductImage {
-  image_url: string;
-  public_id?: string;
-  alt_text?: string;
+  imageUrl: string;
+  publicId?: string;
+  altText?: string;
 }
 
 interface ProductRow {
@@ -37,20 +37,20 @@ interface ProductRow {
   slug: string;
   sku: string;
   description: string;
-  short_description: string;
-  retail_price: string;
-  wholesale_price: string;
-  distributor_price: string;
-  cost_price: string;
+  shortDescription: string;
+  retailPrice: string;
+  wholesalePrice: string;
+  distributorPrice: string;
+  costPrice: string;
   moq: number;
   stock: number;
-  low_stock_threshold: number;
+  lowStockThreshold: number;
   brand: string;
   unit: string;
   weight: string;
-  is_active: boolean;
-  is_featured: boolean;
-  category_id: number;
+  isActive: boolean;
+  isFeatured: boolean;
+  categoryId: number;
   category?: { id: number; name: string };
   images: ProductImage[];
 }
@@ -104,11 +104,11 @@ export default function AdminProductsPage() {
     setLoading(true);
     try {
       const [prodData, catData] = await Promise.all([
-        fetchAdminProducts({ search, page, per_page: 15 }),
+        fetchAdminProducts({ search, page, perPage: 15 }),
         fetchAdminCategories(),
       ]);
       setProducts(prodData.data || []);
-      setLastPage(prodData.last_page || 1);
+      setLastPage(prodData.lastPage || prodData.last_page || 1);
       setTotal(prodData.total || 0);
       setCategories(
         (catData.categories || []).map((c: CategoryOption) => ({
@@ -136,23 +136,23 @@ export default function AdminProductsPage() {
     setEditing(p);
     setForm({
       name: p.name,
-      category_id: String(p.category_id),
+      category_id: String(p.categoryId),
       sku: p.sku,
       description: p.description || "",
-      short_description: p.short_description || "",
-      retail_price: p.retail_price,
-      wholesale_price: p.wholesale_price,
-      distributor_price: p.distributor_price,
-      cost_price: p.cost_price,
+      short_description: p.shortDescription || "",
+      retail_price: p.retailPrice,
+      wholesale_price: p.wholesalePrice,
+      distributor_price: p.distributorPrice,
+      cost_price: p.costPrice,
       moq: String(p.moq),
       stock: String(p.stock),
-      low_stock_threshold: String(p.low_stock_threshold),
+      low_stock_threshold: String(p.lowStockThreshold),
       brand: p.brand || "",
       unit: p.unit,
       weight: p.weight || "",
-      is_active: p.is_active,
-      is_featured: p.is_featured,
-      images: p.images || [],
+      is_active: p.isActive,
+      is_featured: p.isFeatured,
+      images: p.images?.map(img => ({ imageUrl: img.imageUrl, publicId: img.publicId, altText: img.altText })) || [],
     });
     setShowModal(true);
   };
@@ -168,9 +168,9 @@ export default function AdminProductsPage() {
         images: [
           ...prev.images,
           {
-            image_url: data.url,
-            public_id: data.public_id,
-            alt_text: form.name,
+            imageUrl: data.url,
+            publicId: data.public_id,
+            altText: form.name,
           },
         ],
       }));
@@ -322,7 +322,7 @@ export default function AdminProductsPage() {
                         <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/[0.05] overflow-hidden shrink-0 relative">
                           {p.images?.[0] ? (
                             <SafeImage
-                              src={p.images[0].image_url}
+                              src={p.images[0].imageUrl}
                               alt={p.name}
                               fill
                               className="object-cover"
@@ -349,12 +349,12 @@ export default function AdminProductsPage() {
                       {p.category?.name || "—"}
                     </td>
                     <td className="py-3 px-4 text-right font-semibold text-gray-900 dark:text-white">
-                      Rs {parseFloat(p.retail_price).toFixed(2)}
+                      Rs {parseFloat(p.retailPrice).toFixed(2)}
                     </td>
                     <td className="py-3 px-4 text-right">
                       <span
                         className={`font-medium ${
-                          p.stock <= p.low_stock_threshold
+                          p.stock <= p.lowStockThreshold
                             ? "text-red-600"
                             : "text-gray-600"
                         }`}
@@ -364,12 +364,12 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="py-3 px-4 text-center">
                       <div className="flex items-center justify-center gap-1.5">
-                        {p.is_active ? (
+                        {p.isActive ? (
                           <Eye className="h-4 w-4 text-emerald-500" />
                         ) : (
                           <EyeOff className="h-4 w-4 text-gray-300" />
                         )}
-                        {p.is_featured && (
+                        {p.isFeatured && (
                           <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
                         )}
                       </div>
@@ -660,7 +660,7 @@ export default function AdminProductsPage() {
                       className="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-200 dark:border-white/[0.06] group"
                     >
                       <SafeImage
-                        src={img.image_url}
+                        src={img.imageUrl}
                         alt=""
                         fill
                         className="object-cover"

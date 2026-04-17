@@ -12,7 +12,6 @@ import {
   Clock,
   AlertTriangle,
   TrendingUp,
-  TrendingDown,
   ArrowUpRight,
   ArrowDownRight,
   Plus,
@@ -22,74 +21,94 @@ import {
   Activity,
   Zap,
   ChevronRight,
+  Truck,
+  CheckCircle2,
+  XCircle,
+  RefreshCcw,
+  CreditCard,
+  UserPlus,
+  PackageOpen,
+  Ban,
+  Calendar,
+  Target,
 } from "lucide-react";
 
+/* ─── Types ─── */
 interface DashboardData {
   stats: {
-    total_revenue: number;
-    total_orders: number;
-    total_products: number;
-    total_customers: number;
-    pending_orders: number;
-    low_stock_products: number;
-    pending_customers: number;
+    totalRevenue: number;
+    lastMonthRevenue: number;
+    thisMonthRevenue: number;
+    todayRevenue: number;
+    revenueChange: string;
+    totalOrders: number;
+    lastMonthOrders: number;
+    thisMonthOrders: number;
+    thisWeekOrders: number;
+    todayOrders: number;
+    orderChange: string;
+    pendingOrders: number;
+    processingOrders: number;
+    shippedOrders: number;
+    deliveredOrders: number;
+    cancelledOrders: number;
+    totalProducts: number;
+    totalCustomers: number;
+    approvedCustomers: number;
+    customerChange: string;
+    pendingCustomers: number;
+    lowStockProducts: number;
+    outOfStockProducts: number;
+    avgOrderValue: number;
   };
-  recent_orders: Array<{
+  recentOrders: Array<{
     id: number;
-    total: string;
+    orderNumber: string;
+    customerName: string;
+    customerEmail: string;
+    totalAmount: number;
     status: string;
-    created_at: string;
-    user?: { id: number; name: string; email: string };
+    paymentStatus: string;
+    paymentMethod: string;
+    createdAt: string;
   }>;
-  top_products: Array<{
+  topProducts: Array<{
+    productId: number;
+    productName: string;
+    totalQuantity: number;
+    totalRevenue: number;
+  }>;
+  monthlyRevenue: Array<{ month: string; revenue: number; orders: number }>;
+  recentCustomers: Array<{
     id: number;
     name: string;
-    retail_price: string;
-    stock: number;
-    total_sold: number;
+    email: string;
+    businessName: string | null;
+    status: string;
+    orderCount: number;
+    createdAt: string;
   }>;
-  monthly_revenue: Array<{ month: string; revenue: number }>;
 }
 
-const statusColors: Record<string, string> = {
-  pending: "bg-amber-500/10 text-amber-500 border border-amber-500/20",
-  processing: "bg-blue-500/10 text-blue-500 border border-blue-500/20",
-  shipped: "bg-purple-500/10 text-purple-500 border border-purple-500/20",
-  delivered: "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20",
-  cancelled: "bg-red-500/10 text-red-500 border border-red-500/20",
+const statusConfig: Record<string, { bg: string; dot: string }> = {
+  pending: { bg: "bg-amber-500/10 text-amber-600 dark:text-amber-400", dot: "bg-amber-500" },
+  processing: { bg: "bg-blue-500/10 text-blue-600 dark:text-blue-400", dot: "bg-blue-500" },
+  shipped: { bg: "bg-purple-500/10 text-purple-600 dark:text-purple-400", dot: "bg-purple-500" },
+  delivered: { bg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400", dot: "bg-emerald-500" },
+  cancelled: { bg: "bg-red-500/10 text-red-600 dark:text-red-400", dot: "bg-red-500" },
 };
 
-const quickActions = [
-  {
-    label: "Add Product",
-    icon: Plus,
-    href: "/admin/products",
-    color: "from-[#3B82F6] to-[#2563EB]",
-  },
-  {
-    label: "View Orders",
-    icon: ShoppingCart,
-    href: "/admin/orders",
-    color: "from-[#8B5CF6] to-[#7C3AED]",
-  },
-  {
-    label: "Customers",
-    icon: Users,
-    href: "/admin/customers",
-    color: "from-[#10B981] to-[#059669]",
-  },
-  {
-    label: "Settings",
-    icon: Settings,
-    href: "/admin/settings",
-    color: "from-[#F59E0B] to-[#D97706]",
-  },
-];
+const paymentStatusConfig: Record<string, string> = {
+  paid: "text-emerald-600 bg-emerald-500/10",
+  unpaid: "text-amber-600 bg-amber-500/10",
+  refunded: "text-red-600 bg-red-500/10",
+};
 
 export default function AdminDashboard() {
   const { user } = useAuthStore();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [chartMode, setChartMode] = useState<"revenue" | "orders">("revenue");
 
   useEffect(() => {
     fetchDashboard()
@@ -98,36 +117,26 @@ export default function AdminDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  /* ─── SKELETON LOADING ─── */
+  /* ─── Loading skeleton ─── */
   if (loading) {
     return (
       <div className="space-y-6 animate-pulse">
-        {/* Welcome skeleton */}
-        <div className="h-8 w-64 bg-gray-200 dark:bg-white/[0.06] rounded-lg" />
-        {/* KPI cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="h-8 w-72 bg-gray-200 dark:bg-white/[0.06] rounded-lg" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-[120px] bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06]"
-            />
+            <div key={i} className="h-[140px] bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06]" />
           ))}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {Array.from({ length: 2 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-[100px] bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06]"
-            />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-[88px] bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06]" />
           ))}
         </div>
-        {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 h-80 bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06]" />
-          <div className="h-80 bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06]" />
+          <div className="lg:col-span-2 h-[380px] bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06]" />
+          <div className="h-[380px] bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06]" />
         </div>
-        {/* Table */}
-        <div className="h-72 bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06]" />
+        <div className="h-[400px] bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06]" />
       </div>
     );
   }
@@ -139,171 +148,232 @@ export default function AdminDashboard() {
           <AlertTriangle className="h-8 w-8 text-red-500" />
         </div>
         <p className="text-gray-500 dark:text-gray-400 text-center max-w-sm">
-          Failed to load dashboard data. Make sure the backend is running.
+          Failed to load dashboard data. Please check your connection.
         </p>
+        <button onClick={() => window.location.reload()} className="text-sm text-[#3B82F6] font-medium hover:underline flex items-center gap-1">
+          <RefreshCcw className="h-3.5 w-3.5" /> Retry
+        </button>
       </div>
     );
   }
 
-  const { stats, recent_orders, top_products, monthly_revenue } = data;
-  const maxRevenue = Math.max(...monthly_revenue.map((m) => m.revenue), 1);
+  const { stats, recentOrders, topProducts, monthlyRevenue, recentCustomers } = data;
 
-  const kpiCards = [
-    {
-      label: "Total Revenue",
-      value: `Rs ${stats.total_revenue.toLocaleString()}`,
-      change: "+12.5%",
-      trend: "up" as const,
-      icon: DollarSign,
-      iconBg: "bg-emerald-500/10",
-      iconColor: "text-emerald-500",
-    },
-    {
-      label: "Total Orders",
-      value: stats.total_orders.toLocaleString(),
-      change: "+8.2%",
-      trend: "up" as const,
-      icon: ShoppingCart,
-      iconBg: "bg-blue-500/10",
-      iconColor: "text-blue-500",
-    },
-    {
-      label: "Total Products",
-      value: stats.total_products.toLocaleString(),
-      change: "+3",
-      trend: "up" as const,
-      icon: Package,
-      iconBg: "bg-purple-500/10",
-      iconColor: "text-purple-500",
-    },
-    {
-      label: "Total Customers",
-      value: stats.total_customers.toLocaleString(),
-      change: "+5.1%",
-      trend: "up" as const,
-      icon: Users,
-      iconBg: "bg-cyan-500/10",
-      iconColor: "text-cyan-500",
-    },
-  ];
+  const chartData = monthlyRevenue;
+  const maxChartVal = Math.max(...chartData.map((m) => chartMode === "revenue" ? m.revenue : m.orders), 1);
 
-  const alertCards = [
-    {
-      label: "Pending Orders",
-      value: stats.pending_orders,
-      icon: Clock,
-      color: "text-amber-500",
-      bg: "bg-amber-500/10",
-      href: "/admin/orders",
-    },
-    {
-      label: "Low Stock Items",
-      value: stats.low_stock_products,
-      icon: AlertTriangle,
-      color: "text-red-500",
-      bg: "bg-red-500/10",
-      href: "/admin/products",
-    },
-  ];
+  // Order distribution for donut
+  const orderDist = [
+    { label: "Delivered", count: stats.deliveredOrders, color: "#10B981" },
+    { label: "Processing", count: stats.processingOrders, color: "#3B82F6" },
+    { label: "Shipped", count: stats.shippedOrders, color: "#8B5CF6" },
+    { label: "Pending", count: stats.pendingOrders, color: "#F59E0B" },
+    { label: "Cancelled", count: stats.cancelledOrders, color: "#EF4444" },
+  ].filter((d) => d.count > 0);
+  const totalDistOrders = orderDist.reduce((a, b) => a + b.count, 0);
+
+  // Donut SVG calculations
+  const donutSegments: Array<{ offset: number; pct: number; color: string }> = [];
+  let cumulativeOffset = 0;
+  orderDist.forEach((d) => {
+    const pct = totalDistOrders > 0 ? (d.count / totalDistOrders) * 100 : 0;
+    donutSegments.push({ offset: cumulativeOffset, pct, color: d.color });
+    cumulativeOffset += pct;
+  });
+
+  const changeNum = (val: string) => {
+    const n = parseFloat(val);
+    return { isUp: n >= 0, display: `${n >= 0 ? "+" : ""}${val}%` };
+  };
+
+  const revChange = changeNum(stats.revenueChange);
+  const ordChange = changeNum(stats.orderChange);
+  const custChange = changeNum(stats.customerChange);
+
+  const greeting = () => {
+    const h = new Date().getHours();
+    if (h < 12) return "Good morning";
+    if (h < 17) return "Good afternoon";
+    return "Good evening";
+  };
 
   return (
     <div className="space-y-6">
-      {/* ─── WELCOME HEADER ─── */}
+      {/* ─── HEADER ─── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-            Welcome back, {user?.name?.split(" ")[0] || "Admin"} 👋
+            {greeting()}, {user?.name?.split(" ")[0] || "Admin"} 👋
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Here&apos;s what&apos;s happening with your store today
+            Here&apos;s your store overview for today
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Link
-            href="/admin/products"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#3B82F6] text-white rounded-xl text-sm font-medium hover:bg-[#2563EB] transition-colors shadow-lg shadow-[#3B82F6]/25"
-          >
-            <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Add Product</span>
+          <Link href="/admin/reports" className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-white/[0.06] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium hover:bg-gray-50 dark:hover:bg-white/10 transition-colors">
+            <BarChart3 className="h-4 w-4" /> Reports
+          </Link>
+          <Link href="/admin/products" className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#3B82F6] text-white rounded-xl text-sm font-medium hover:bg-[#2563EB] transition-colors shadow-lg shadow-[#3B82F6]/25">
+            <Plus className="h-4 w-4" /> Add Product
           </Link>
         </div>
       </div>
 
-      {/* ─── KPI INTELLIGENCE CARDS ─── */}
+      {/* ─── PRIMARY KPI CARDS ─── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {kpiCards.map((card) => (
-          <div
-            key={card.label}
-            className="group relative bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] p-5 hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-none transition-all duration-300 overflow-hidden"
-          >
-            {/* Subtle gradient accent */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-gray-50 dark:from-white/[0.02] to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative flex items-start justify-between">
-              <div className="space-y-2">
-                <p className="text-[13px] text-gray-500 dark:text-gray-400 font-medium">
-                  {card.label}
-                </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                  {card.value}
-                </p>
-                <div
-                  className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
-                    card.trend === "up"
-                      ? "text-emerald-600 bg-emerald-500/10"
-                      : "text-red-600 bg-red-500/10"
-                  }`}
-                >
-                  {card.trend === "up" ? (
-                    <ArrowUpRight className="h-3 w-3" />
-                  ) : (
-                    <ArrowDownRight className="h-3 w-3" />
-                  )}
-                  {card.change}
-                </div>
+        {/* Revenue */}
+        <div className="group relative bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] p-5 hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-none transition-all duration-300 overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/5 to-transparent rounded-bl-full" />
+          <div className="relative flex items-start justify-between">
+            <div className="space-y-1.5">
+              <p className="text-[13px] text-gray-500 dark:text-gray-400 font-medium">Total Revenue</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                Rs {stats.totalRevenue.toLocaleString()}
+              </p>
+              <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center gap-0.5 text-[11px] font-semibold px-1.5 py-0.5 rounded-md ${revChange.isUp ? "text-emerald-600 bg-emerald-500/10" : "text-red-600 bg-red-500/10"}`}>
+                  {revChange.isUp ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                  {revChange.display}
+                </span>
+                <span className="text-[10px] text-gray-400">vs last month</span>
               </div>
-              <div
-                className={`w-11 h-11 rounded-xl flex items-center justify-center ${card.iconBg}`}
-              >
-                <card.icon className={`h-5 w-5 ${card.iconColor}`} />
-              </div>
+            </div>
+            <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+              <DollarSign className="h-5 w-5 text-emerald-500" />
             </div>
           </div>
-        ))}
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-white/[0.04] flex items-center justify-between">
+            <span className="text-[11px] text-gray-400">Today: <strong className="text-gray-600 dark:text-gray-300">Rs {stats.todayRevenue.toLocaleString()}</strong></span>
+            <span className="text-[11px] text-gray-400">This month: <strong className="text-gray-600 dark:text-gray-300">Rs {stats.thisMonthRevenue.toLocaleString()}</strong></span>
+          </div>
+        </div>
+
+        {/* Orders */}
+        <div className="group relative bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] p-5 hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-none transition-all duration-300 overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-500/5 to-transparent rounded-bl-full" />
+          <div className="relative flex items-start justify-between">
+            <div className="space-y-1.5">
+              <p className="text-[13px] text-gray-500 dark:text-gray-400 font-medium">Total Orders</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{stats.totalOrders.toLocaleString()}</p>
+              <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center gap-0.5 text-[11px] font-semibold px-1.5 py-0.5 rounded-md ${ordChange.isUp ? "text-emerald-600 bg-emerald-500/10" : "text-red-600 bg-red-500/10"}`}>
+                  {ordChange.isUp ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                  {ordChange.display}
+                </span>
+                <span className="text-[10px] text-gray-400">vs last month</span>
+              </div>
+            </div>
+            <div className="w-11 h-11 rounded-xl bg-blue-500/10 flex items-center justify-center">
+              <ShoppingCart className="h-5 w-5 text-blue-500" />
+            </div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-white/[0.04] flex items-center justify-between">
+            <span className="text-[11px] text-gray-400">Today: <strong className="text-gray-600 dark:text-gray-300">{stats.todayOrders}</strong></span>
+            <span className="text-[11px] text-gray-400">This week: <strong className="text-gray-600 dark:text-gray-300">{stats.thisWeekOrders}</strong></span>
+          </div>
+        </div>
+
+        {/* Products */}
+        <div className="group relative bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] p-5 hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-none transition-all duration-300 overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-purple-500/5 to-transparent rounded-bl-full" />
+          <div className="relative flex items-start justify-between">
+            <div className="space-y-1.5">
+              <p className="text-[13px] text-gray-500 dark:text-gray-400 font-medium">Total Products</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{stats.totalProducts.toLocaleString()}</p>
+              <div className="flex items-center gap-2 text-[11px]">
+                {stats.lowStockProducts > 0 && (
+                  <span className="text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded-md font-medium">{stats.lowStockProducts} low stock</span>
+                )}
+                {stats.outOfStockProducts > 0 && (
+                  <span className="text-red-600 bg-red-500/10 px-1.5 py-0.5 rounded-md font-medium">{stats.outOfStockProducts} out</span>
+                )}
+                {stats.lowStockProducts === 0 && stats.outOfStockProducts === 0 && (
+                  <span className="text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded-md font-medium">All stocked</span>
+                )}
+              </div>
+            </div>
+            <div className="w-11 h-11 rounded-xl bg-purple-500/10 flex items-center justify-center">
+              <Package className="h-5 w-5 text-purple-500" />
+            </div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-white/[0.04]">
+            <Link href="/admin/inventory" className="text-[11px] text-[#3B82F6] font-medium hover:underline flex items-center gap-1">
+              Manage inventory <ChevronRight className="h-3 w-3" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Customers */}
+        <div className="group relative bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] p-5 hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-none transition-all duration-300 overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-cyan-500/5 to-transparent rounded-bl-full" />
+          <div className="relative flex items-start justify-between">
+            <div className="space-y-1.5">
+              <p className="text-[13px] text-gray-500 dark:text-gray-400 font-medium">Total Customers</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{stats.totalCustomers.toLocaleString()}</p>
+              <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center gap-0.5 text-[11px] font-semibold px-1.5 py-0.5 rounded-md ${custChange.isUp ? "text-emerald-600 bg-emerald-500/10" : "text-red-600 bg-red-500/10"}`}>
+                  {custChange.isUp ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                  {custChange.display}
+                </span>
+                <span className="text-[10px] text-gray-400">growth</span>
+              </div>
+            </div>
+            <div className="w-11 h-11 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+              <Users className="h-5 w-5 text-cyan-500" />
+            </div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-white/[0.04] flex items-center justify-between">
+            <span className="text-[11px] text-gray-400">Active: <strong className="text-gray-600 dark:text-gray-300">{stats.approvedCustomers}</strong></span>
+            {stats.pendingCustomers > 0 && (
+              <span className="text-[11px] text-amber-600 font-medium">{stats.pendingCustomers} pending approval</span>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* ─── ALERT CARDS ─── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {alertCards.map((alert) => (
-          <Link
-            key={alert.label}
-            href={alert.href}
-            className={`flex items-center gap-4 p-4 rounded-2xl border transition-all hover:shadow-md ${
-              alert.value > 0
-                ? "bg-white dark:bg-white/[0.03] border-gray-100 dark:border-white/[0.06]"
-                : "bg-white dark:bg-white/[0.03] border-gray-100 dark:border-white/[0.06] opacity-60"
-            }`}
-          >
-            <div
-              className={`w-12 h-12 rounded-xl flex items-center justify-center ${alert.bg}`}
-            >
-              <alert.icon className={`h-6 w-6 ${alert.color}`} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                {alert.label}
-              </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {alert.value}
-              </p>
-            </div>
-            <ChevronRight className="h-5 w-5 text-gray-300 dark:text-gray-600" />
-          </Link>
-        ))}
+      {/* ─── SECONDARY STAT STRIP ─── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="flex items-center gap-3 bg-white dark:bg-white/[0.03] rounded-xl border border-gray-100 dark:border-white/[0.06] p-4">
+          <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+            <Clock className="h-5 w-5 text-amber-500" />
+          </div>
+          <div>
+            <p className="text-lg font-bold text-gray-900 dark:text-white">{stats.pendingOrders}</p>
+            <p className="text-[11px] text-gray-400">Pending Orders</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 bg-white dark:bg-white/[0.03] rounded-xl border border-gray-100 dark:border-white/[0.06] p-4">
+          <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+            <RefreshCcw className="h-5 w-5 text-blue-500" />
+          </div>
+          <div>
+            <p className="text-lg font-bold text-gray-900 dark:text-white">{stats.processingOrders}</p>
+            <p className="text-[11px] text-gray-400">Processing</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 bg-white dark:bg-white/[0.03] rounded-xl border border-gray-100 dark:border-white/[0.06] p-4">
+          <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+            <Target className="h-5 w-5 text-emerald-500" />
+          </div>
+          <div>
+            <p className="text-lg font-bold text-gray-900 dark:text-white">Rs {stats.avgOrderValue.toLocaleString()}</p>
+            <p className="text-[11px] text-gray-400">Avg Order Value</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 bg-white dark:bg-white/[0.03] rounded-xl border border-gray-100 dark:border-white/[0.06] p-4">
+          <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+            <AlertTriangle className="h-5 w-5 text-red-500" />
+          </div>
+          <div>
+            <p className="text-lg font-bold text-gray-900 dark:text-white">{stats.lowStockProducts + stats.outOfStockProducts}</p>
+            <p className="text-[11px] text-gray-400">Stock Alerts</p>
+          </div>
+        </div>
       </div>
 
-      {/* ─── CHARTS ROW ─── */}
+      {/* ─── CHARTS + ORDER DISTRIBUTION ROW ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue Chart */}
+        {/* Revenue / Orders Chart */}
         <div className="lg:col-span-2 bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
@@ -312,202 +382,275 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
-                  Revenue Overview
+                  {chartMode === "revenue" ? "Revenue Overview" : "Orders Overview"}
                 </h2>
-                <p className="text-[11px] text-gray-400">Monthly breakdown</p>
+                <p className="text-[11px] text-gray-400">Last 12 months</p>
               </div>
             </div>
             <div className="flex items-center gap-1 bg-gray-100 dark:bg-white/[0.06] rounded-lg p-0.5">
-              <button className="px-3 py-1 text-xs font-medium bg-white dark:bg-white/10 text-gray-900 dark:text-white rounded-md shadow-sm">
+              <button onClick={() => setChartMode("revenue")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${chartMode === "revenue" ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm" : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"}`}>
                 Revenue
               </button>
-              <button className="px-3 py-1 text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-md">
+              <button onClick={() => setChartMode("orders")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${chartMode === "orders" ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm" : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"}`}>
                 Orders
               </button>
             </div>
           </div>
-          <div className="flex items-end gap-2 sm:gap-3 h-52">
-            {monthly_revenue.map((m, idx) => {
-              const pct = Math.max((m.revenue / maxRevenue) * 100, 4);
-              return (
-                <div
-                  key={m.month}
-                  className="flex-1 flex flex-col items-center gap-2 group"
-                >
-                  <span className="text-[10px] text-gray-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                    Rs {m.revenue >= 1000
-                      ? `${(m.revenue / 1000).toFixed(1)}k`
-                      : m.revenue}
-                  </span>
-                  <div className="w-full relative">
-                    <div
-                      className="w-full bg-gradient-to-t from-[#3B82F6] to-[#60A5FA] rounded-t-lg transition-all duration-500 group-hover:from-[#2563EB] group-hover:to-[#3B82F6] min-h-[4px]"
-                      style={{ height: `${pct}%`, minHeight: `${pct * 2}px` }}
-                    />
+
+          {chartData.length === 0 ? (
+            <div className="h-56 flex items-center justify-center text-gray-400 text-sm">
+              No data available yet
+            </div>
+          ) : (
+            <div className="flex items-end gap-1.5 sm:gap-2 h-56">
+              {chartData.map((m) => {
+                const val = chartMode === "revenue" ? m.revenue : m.orders;
+                const pct = Math.max((val / maxChartVal) * 100, 4);
+                return (
+                  <div key={m.month} className="flex-1 flex flex-col items-center gap-1.5 group cursor-default">
+                    <div className="relative">
+                      <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap absolute -top-5 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-2 py-0.5 rounded-md">
+                        {chartMode === "revenue"
+                          ? `Rs ${val >= 1000 ? `${(val / 1000).toFixed(1)}k` : val.toLocaleString()}`
+                          : `${val} orders`}
+                      </span>
+                    </div>
+                    <div className="w-full relative">
+                      <div
+                        className={`w-full rounded-t-lg transition-all duration-500 min-h-[4px] ${chartMode === "revenue" ? "bg-gradient-to-t from-[#3B82F6] to-[#60A5FA] group-hover:from-[#2563EB] group-hover:to-[#3B82F6]" : "bg-gradient-to-t from-[#8B5CF6] to-[#A78BFA] group-hover:from-[#7C3AED] group-hover:to-[#8B5CF6]"}`}
+                        style={{ height: `${pct * 2.2}px` }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-gray-400 font-medium">
+                      {new Date(m.month + "-01").toLocaleString("en-US", { month: "short" })}
+                    </span>
                   </div>
-                  <span className="text-[10px] text-gray-400 font-medium">
-                    {m.month.slice(0, 3)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
+        {/* Order Distribution Donut */}
+        <div className="bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] p-6">
+          <div className="flex items-center gap-2 mb-5">
+            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+              <Activity className="h-4 w-4 text-purple-500" />
+            </div>
+            <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Order Status</h2>
+          </div>
+
+          {totalDistOrders === 0 ? (
+            <div className="h-48 flex items-center justify-center text-gray-400 text-sm">No orders yet</div>
+          ) : (
+            <>
+              {/* SVG Donut */}
+              <div className="flex justify-center mb-5">
+                <div className="relative w-40 h-40">
+                  <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+                    {donutSegments.map((seg, i) => (
+                      <circle key={i} cx="18" cy="18" r="15.915" fill="none" strokeWidth="3"
+                        stroke={seg.color}
+                        strokeDasharray={`${seg.pct} ${100 - seg.pct}`}
+                        strokeDashoffset={`${-seg.offset}`}
+                        strokeLinecap="round"
+                        className="transition-all duration-700"
+                      />
+                    ))}
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-2xl font-bold text-gray-900 dark:text-white">{totalDistOrders}</span>
+                    <span className="text-[10px] text-gray-400 font-medium">Total Orders</span>
+                  </div>
+                </div>
+              </div>
+              {/* Legend */}
+              <div className="space-y-2">
+                {orderDist.map((d) => (
+                  <div key={d.label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }} />
+                      <span className="text-[12px] text-gray-600 dark:text-gray-400">{d.label}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[12px] font-semibold text-gray-900 dark:text-white">{d.count}</span>
+                      <span className="text-[10px] text-gray-400">{((d.count / totalDistOrders) * 100).toFixed(0)}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* ─── TOP PRODUCTS + RECENT CUSTOMERS ROW ─── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Products */}
         <div className="bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] p-6">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                <TrendingUp className="h-4 w-4 text-purple-500" />
+              <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                <TrendingUp className="h-4 w-4 text-amber-500" />
               </div>
-              <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
-                Top Products
-              </h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Top Selling Products</h2>
             </div>
-            <Link
-              href="/admin/products"
-              className="text-xs text-[#3B82F6] font-medium hover:underline"
-            >
-              View all
-            </Link>
+            <Link href="/admin/products" className="text-xs text-[#3B82F6] font-medium hover:underline">View all</Link>
           </div>
-          <div className="space-y-3">
-            {top_products.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-8">
-                No sales data yet
-              </p>
-            ) : (
-              top_products.slice(0, 5).map((p, i) => (
-                <div
-                  key={p.id}
-                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors"
-                >
-                  <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
-                      i === 0
-                        ? "bg-amber-500/10 text-amber-500"
-                        : i === 1
-                        ? "bg-gray-200/80 dark:bg-white/[0.06] text-gray-500"
-                        : i === 2
-                        ? "bg-orange-500/10 text-orange-500"
-                        : "bg-gray-100 dark:bg-white/[0.04] text-gray-400"
-                    }`}
-                  >
-                    #{i + 1}
+          {topProducts.length === 0 ? (
+            <div className="py-10 text-center text-gray-400 text-sm">No sales data yet</div>
+          ) : (
+            <div className="space-y-3">
+              {topProducts.slice(0, 5).map((p, i) => {
+                const maxQty = Math.max(...topProducts.map((x) => x.totalQuantity || 0), 1);
+                const barPct = ((p.totalQuantity || 0) / maxQty) * 100;
+                return (
+                  <div key={p.productId ?? i} className="group">
+                    <div className="flex items-center gap-3 mb-1.5">
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold ${i === 0 ? "bg-amber-500/10 text-amber-500" : i === 1 ? "bg-gray-200/80 dark:bg-white/[0.06] text-gray-500" : i === 2 ? "bg-orange-500/10 text-orange-500" : "bg-gray-100 dark:bg-white/[0.04] text-gray-400"}`}>
+                        #{i + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium text-gray-900 dark:text-white truncate">{p.productName}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-[13px] font-semibold text-gray-900 dark:text-white">{p.totalQuantity} sold</p>
+                        <p className="text-[10px] text-gray-400">Rs {Number(p.totalRevenue || 0).toLocaleString()}</p>
+                      </div>
+                    </div>
+                    <div className="ml-10 h-1.5 bg-gray-100 dark:bg-white/[0.06] rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-[#3B82F6] to-[#60A5FA] rounded-full transition-all duration-700" style={{ width: `${barPct}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Recent Customers */}
+        <div className="bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] p-6">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                <UserPlus className="h-4 w-4 text-cyan-500" />
+              </div>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Recent Customers</h2>
+            </div>
+            <Link href="/admin/customers" className="text-xs text-[#3B82F6] font-medium hover:underline">View all</Link>
+          </div>
+          {recentCustomers.length === 0 ? (
+            <div className="py-10 text-center text-gray-400 text-sm">No customers yet</div>
+          ) : (
+            <div className="space-y-3">
+              {recentCustomers.map((c) => (
+                <div key={c.id} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#3B82F6] to-[#8B5CF6] flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    {c.name?.charAt(0)?.toUpperCase() || "?"}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-gray-900 dark:text-white truncate">
-                      {p.name}
-                    </p>
-                    <p className="text-[11px] text-gray-400">
-                      {p.stock} in stock
-                    </p>
+                    <p className="text-[13px] font-medium text-gray-900 dark:text-white truncate">{c.name}</p>
+                    <p className="text-[11px] text-gray-400 truncate">{c.businessName || c.email}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-[13px] font-semibold text-emerald-500">
-                      {p.total_sold}
-                    </p>
-                    <p className="text-[10px] text-gray-400">sold</p>
+                  <div className="text-right shrink-0">
+                    <span className={`inline-flex text-[10px] font-semibold px-2 py-0.5 rounded-md capitalize ${c.status === "approved" ? "text-emerald-600 bg-emerald-500/10" : c.status === "pending" ? "text-amber-600 bg-amber-500/10" : "text-red-600 bg-red-500/10"}`}>
+                      {c.status}
+                    </span>
+                    <p className="text-[10px] text-gray-400 mt-0.5">{c.orderCount} orders</p>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
       {/* ─── RECENT ORDERS TABLE ─── */}
       <div className="bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-100 dark:border-white/[0.06] overflow-hidden">
-        <div className="flex items-center justify-between p-5 sm:p-6 pb-0">
+        <div className="flex items-center justify-between p-5 sm:p-6">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
-              <Activity className="h-4 w-4 text-amber-500" />
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <ShoppingCart className="h-4 w-4 text-blue-500" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
-                Recent Orders
-              </h2>
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Recent Orders</h2>
               <p className="text-[11px] text-gray-400">Latest transactions</p>
             </div>
           </div>
-          <Link
-            href="/admin/orders"
-            className="text-xs text-[#3B82F6] font-medium hover:underline flex items-center gap-1"
-          >
+          <Link href="/admin/orders" className="text-xs text-[#3B82F6] font-medium hover:underline flex items-center gap-1">
             View all <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
-        {recent_orders.length === 0 ? (
-          <div className="p-12 text-center text-gray-400 dark:text-gray-500">
-            No orders yet
+        {recentOrders.length === 0 ? (
+          <div className="p-12 text-center">
+            <PackageOpen className="h-10 w-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+            <p className="text-gray-400 dark:text-gray-500 text-sm">No orders yet</p>
+            <p className="text-[11px] text-gray-300 dark:text-gray-600 mt-1">Orders will appear here when customers start buying</p>
           </div>
         ) : (
-          <div className="overflow-x-auto mt-4">
+          <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-y border-gray-100 dark:border-white/[0.06]">
-                  <th className="text-left py-3 px-5 sm:px-6 font-medium text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider">
-                    Order
-                  </th>
-                  <th className="text-left py-3 px-3 font-medium text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider">
-                    Customer
-                  </th>
-                  <th className="text-left py-3 px-3 font-medium text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider hidden sm:table-cell">
-                    Date
-                  </th>
-                  <th className="text-right py-3 px-3 font-medium text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider">
-                    Amount
-                  </th>
-                  <th className="text-center py-3 px-5 sm:px-6 font-medium text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider">
-                    Status
-                  </th>
+                <tr className="border-t border-gray-100 dark:border-white/[0.06] bg-gray-50/50 dark:bg-white/[0.02]">
+                  <th className="text-left py-3 px-5 sm:px-6 font-medium text-gray-400 dark:text-gray-500 text-[11px] uppercase tracking-wider">Order</th>
+                  <th className="text-left py-3 px-3 font-medium text-gray-400 dark:text-gray-500 text-[11px] uppercase tracking-wider">Customer</th>
+                  <th className="text-left py-3 px-3 font-medium text-gray-400 dark:text-gray-500 text-[11px] uppercase tracking-wider hidden sm:table-cell">Date</th>
+                  <th className="text-left py-3 px-3 font-medium text-gray-400 dark:text-gray-500 text-[11px] uppercase tracking-wider hidden md:table-cell">Payment</th>
+                  <th className="text-right py-3 px-3 font-medium text-gray-400 dark:text-gray-500 text-[11px] uppercase tracking-wider">Amount</th>
+                  <th className="text-center py-3 px-5 sm:px-6 font-medium text-gray-400 dark:text-gray-500 text-[11px] uppercase tracking-wider">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {recent_orders.slice(0, 8).map((order) => (
-                  <tr
-                    key={order.id}
-                    className="border-b border-gray-50 dark:border-white/[0.03] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors"
-                  >
-                    <td className="py-3.5 px-5 sm:px-6">
-                      <span className="font-semibold text-gray-900 dark:text-white">
-                        #{order.id.toString().padStart(4, "0")}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-gray-200 to-gray-100 dark:from-white/10 dark:to-white/5 flex items-center justify-center text-[10px] font-bold text-gray-500 dark:text-gray-400 shrink-0">
-                          {order.user?.name?.charAt(0)?.toUpperCase() || "?"}
+                {recentOrders.slice(0, 8).map((order) => {
+                  const sc = statusConfig[order.status] || { bg: "bg-gray-100 text-gray-500", dot: "bg-gray-400" };
+                  return (
+                    <tr key={order.id} className="border-t border-gray-50 dark:border-white/[0.03] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                      <td className="py-3.5 px-5 sm:px-6">
+                        <Link href={`/admin/orders`} className="font-semibold text-gray-900 dark:text-white hover:text-[#3B82F6] transition-colors">
+                          {order.orderNumber || `#${order.id.toString().padStart(4, "0")}`}
+                        </Link>
+                      </td>
+                      <td className="py-3.5 px-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-gray-200 to-gray-100 dark:from-white/10 dark:to-white/5 flex items-center justify-center text-[10px] font-bold text-gray-500 dark:text-gray-400 shrink-0">
+                            {order.customerName?.charAt(0)?.toUpperCase() || "?"}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-[13px] font-medium text-gray-900 dark:text-white truncate">{order.customerName || "Guest"}</p>
+                            <p className="text-[10px] text-gray-400 truncate hidden lg:block">{order.customerEmail}</p>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <p className="text-[13px] font-medium text-gray-900 dark:text-white truncate">
-                            {order.user?.name || "Guest"}
+                      </td>
+                      <td className="py-3.5 px-3 hidden sm:table-cell">
+                        <div>
+                          <p className="text-[13px] text-gray-600 dark:text-gray-300">
+                            {new Date(order.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                          </p>
+                          <p className="text-[10px] text-gray-400">
+                            {new Date(order.createdAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
                           </p>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-3 text-gray-400 text-[13px] hidden sm:table-cell">
-                      {new Date(order.created_at).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </td>
-                    <td className="py-3.5 px-3 text-right font-semibold text-gray-900 dark:text-white text-[13px]">
-                      Rs {parseFloat(order.total).toFixed(2)}
-                    </td>
-                    <td className="py-3.5 px-5 sm:px-6 text-center">
-                      <span
-                        className={`inline-flex px-2.5 py-1 rounded-lg text-[11px] font-semibold capitalize ${
-                          statusColors[order.status] ||
-                          "bg-gray-100 text-gray-500"
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-3.5 px-3 hidden md:table-cell">
+                        <div className="flex flex-col gap-1">
+                          <span className={`inline-flex text-[10px] w-fit font-semibold px-2 py-0.5 rounded-md capitalize ${paymentStatusConfig[order.paymentStatus] || "text-gray-500 bg-gray-100"}`}>
+                            {order.paymentStatus}
+                          </span>
+                          <span className="text-[10px] text-gray-400 capitalize">{order.paymentMethod?.replace("_", " ")}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-3 text-right">
+                        <p className="font-semibold text-gray-900 dark:text-white text-[13px]">Rs {Number(order.totalAmount || 0).toLocaleString()}</p>
+                      </td>
+                      <td className="py-3.5 px-5 sm:px-6 text-center">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold capitalize ${sc.bg}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
+                          {order.status}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -520,21 +663,20 @@ export default function AdminDashboard() {
           <Zap className="h-4 w-4 text-amber-500" />
           Quick Actions
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {quickActions.map((action) => (
-            <Link
-              key={action.label}
-              href={action.href}
-              className="group flex flex-col items-center gap-3 p-5 rounded-2xl bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.06] hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-none transition-all duration-300 hover:-translate-y-0.5"
-            >
-              <div
-                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}
-              >
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {[
+            { label: "Add Product", icon: Plus, href: "/admin/products", color: "from-[#3B82F6] to-[#2563EB]" },
+            { label: "View Orders", icon: ShoppingCart, href: "/admin/orders", color: "from-[#8B5CF6] to-[#7C3AED]" },
+            { label: "Customers", icon: Users, href: "/admin/customers", color: "from-[#10B981] to-[#059669]" },
+            { label: "Inventory", icon: Package, href: "/admin/inventory", color: "from-[#F59E0B] to-[#D97706]" },
+            { label: "Reports", icon: BarChart3, href: "/admin/reports", color: "from-[#EC4899] to-[#DB2777]" },
+            { label: "Settings", icon: Settings, href: "/admin/settings", color: "from-[#6366F1] to-[#4F46E5]" },
+          ].map((action) => (
+            <Link key={action.label} href={action.href} className="group flex flex-col items-center gap-3 p-4 rounded-2xl bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.06] hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-none transition-all duration-300 hover:-translate-y-0.5">
+              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
                 <action.icon className="h-5 w-5 text-white" />
               </div>
-              <span className="text-[13px] font-medium text-gray-700 dark:text-gray-300">
-                {action.label}
-              </span>
+              <span className="text-[12px] font-medium text-gray-600 dark:text-gray-300">{action.label}</span>
             </Link>
           ))}
         </div>

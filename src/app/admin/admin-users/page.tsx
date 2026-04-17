@@ -12,7 +12,7 @@ import {
 
 interface Role { id: number; slug: string; name: string; description: string | null; permissions?: Permission[] }
 interface Permission { id: number; slug: string; name: string; module: string }
-interface AdminUser { id: number; name: string; email: string; phone: string | null; is_admin: number; roles?: Role[]; created_at: string }
+interface AdminUser { id: number; name: string; email: string; phone: string | null; role: string; roles?: Role[]; createdAt: string }
 
 export default function AdminUsersPage() {
   const [tab, setTab] = useState<"users" | "roles">("users");
@@ -57,10 +57,11 @@ export default function AdminUsersPage() {
   const loadUsers = useCallback(async () => {
     setULoading(true);
     try {
-      const res = await fetchAdminUsers({ search: uSearch, page: uPage, per_page: 15 });
-      setUsers(res.data);
-      setULastPage(res.last_page);
-      setUTotal(res.total);
+      const res = await fetchAdminUsers({ search: uSearch, page: uPage, perPage: 15 });
+      const list = Array.isArray(res) ? res : (res.data ?? []);
+      setUsers(list);
+      setULastPage(res.lastPage || res.last_page || 1);
+      setUTotal(Array.isArray(res) ? list.length : (res.total ?? 0));
     } catch { showToast("error", "Failed to load users"); }
     setULoading(false);
   }, [uSearch, uPage]);

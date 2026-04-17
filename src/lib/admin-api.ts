@@ -9,9 +9,9 @@ export async function fetchDashboard() {
 // â”€â”€ Products â”€â”€
 export async function fetchAdminProducts(params?: {
   search?: string;
-  category_id?: number;
+  categoryId?: number;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/products", { params });
   return res.data;
@@ -64,7 +64,7 @@ export async function fetchAdminOrders(params?: {
   search?: string;
   status?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/orders", { params });
   return res.data;
@@ -80,7 +80,7 @@ export async function fetchAdminCustomers(params?: {
   search?: string;
   status?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/customers", { params });
   return res.data;
@@ -107,9 +107,9 @@ export async function uploadImage(file: File) {
 // ── Inventory / Stock ──
 export async function fetchInventory(params?: {
   search?: string;
-  stock_status?: string;
+  stockStatus?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/inventory", { params });
   return res.data;
@@ -124,10 +124,10 @@ export async function adjustStock(
 }
 
 export async function fetchStockLogs(params?: {
-  product_id?: number;
+  productId?: number;
   type?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/stock-logs", { params });
   return res.data;
@@ -137,9 +137,9 @@ export async function fetchStockLogs(params?: {
 export async function fetchPayments(params?: {
   search?: string;
   status?: string;
-  payment_method?: string;
+  paymentMethod?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/payments", { params });
   return res.data;
@@ -157,7 +157,7 @@ export async function updatePaymentStatus(
 export async function fetchSalesReport(params?: {
   from?: string;
   to?: string;
-  group_by?: string;
+  groupBy?: string;
 }) {
   const res = await api.get("/admin/reports/sales", { params });
   return res.data;
@@ -202,7 +202,7 @@ export async function fetchActivityLogs(params?: {
   search?: string;
   module?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/activity-logs", { params });
   return res.data;
@@ -211,7 +211,7 @@ export async function fetchActivityLogs(params?: {
 // ── Notifications ──
 export async function fetchNotifications(params?: {
   page?: number;
-  per_page?: number;
+  perPage?: number;
   read?: boolean;
 }) {
   const res = await api.get("/admin/notifications", { params });
@@ -231,9 +231,9 @@ export async function markAllNotificationsRead() {
 // ── Subcategories ──
 export async function fetchSubcategories(params?: {
   search?: string;
-  parent_id?: number;
+  parentId?: number;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/subcategories", { params });
   return res.data;
@@ -259,7 +259,7 @@ export async function fetchCoupons(params?: {
   search?: string;
   status?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/coupons", { params });
   return res.data;
@@ -296,7 +296,7 @@ export async function fetchSuppliers(params?: {
   search?: string;
   status?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/suppliers", { params });
   return res.data;
@@ -326,9 +326,9 @@ export async function deleteSupplier(id: number) {
 export async function fetchPurchaseOrders(params?: {
   search?: string;
   status?: string;
-  supplier_id?: number;
+  supplierId?: number;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/purchase-orders", { params });
   return res.data;
@@ -394,7 +394,7 @@ export async function fetchAdminUsers(params?: {
   search?: string;
   role?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }) {
   const res = await api.get("/admin/admin-users", { params });
   return res.data;

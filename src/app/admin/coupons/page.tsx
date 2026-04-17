@@ -28,14 +28,12 @@ interface Coupon {
   code: string;
   type: "percentage" | "fixed";
   value: string;
-  min_order_amount?: string;
-  max_discount?: string;
-  usage_limit?: number;
-  used_count: number;
-  starts_at?: string;
-  expires_at?: string;
-  is_active: boolean;
-  created_at: string;
+  minOrderValue?: string;
+  maxUses?: number;
+  usedCount: number;
+  expiresAt?: string;
+  isActive: boolean;
+  createdAt: string;
 }
 
 export default function AdminCouponsPage() {
@@ -71,10 +69,10 @@ export default function AdminCouponsPage() {
         search: search || undefined,
         status: statusFilter || undefined,
         page,
-        per_page: 15,
+        perPage: 15,
       });
       setCoupons(data.data || []);
-      setLastPage(data.last_page || 1);
+      setLastPage(data.lastPage || data.last_page || 1);
       setTotal(data.total || 0);
     } catch {
       toast("Failed to load coupons", "error");
@@ -114,12 +112,12 @@ export default function AdminCouponsPage() {
       code: c.code,
       type: c.type,
       value: c.value,
-      min_order_amount: c.min_order_amount || "",
-      max_discount: c.max_discount || "",
-      usage_limit: c.usage_limit?.toString() || "",
-      starts_at: c.starts_at?.split("T")[0] || "",
-      expires_at: c.expires_at?.split("T")[0] || "",
-      is_active: c.is_active,
+      min_order_amount: c.minOrderValue?.toString() || "",
+      max_discount: "",
+      usage_limit: c.maxUses?.toString() || "",
+      starts_at: "",
+      expires_at: c.expiresAt?.split("T")[0] || "",
+      is_active: c.isActive,
     });
     setShowForm(true);
   };
@@ -173,11 +171,11 @@ export default function AdminCouponsPage() {
     toast("Coupon code copied");
   };
 
-  const isExpired = (c: Coupon) => c.expires_at && new Date(c.expires_at) < new Date();
-  const isUsedUp = (c: Coupon) => c.usage_limit !== undefined && c.usage_limit !== null && c.used_count >= c.usage_limit;
+  const isExpired = (c: Coupon) => c.expiresAt && new Date(c.expiresAt) < new Date();
+  const isUsedUp = (c: Coupon) => c.maxUses !== undefined && c.maxUses !== null && c.usedCount >= c.maxUses;
 
   const getStatus = (c: Coupon) => {
-    if (!c.is_active) return { label: "Inactive", cls: "bg-gray-100 text-gray-500 dark:bg-gray-500/10 dark:text-gray-500" };
+    if (!c.isActive) return { label: "Inactive", cls: "bg-gray-100 text-gray-500 dark:bg-gray-500/10 dark:text-gray-500" };
     if (isExpired(c)) return { label: "Expired", cls: "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400" };
     if (isUsedUp(c)) return { label: "Used Up", cls: "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400" };
     return { label: "Active", cls: "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400" };
@@ -280,18 +278,17 @@ export default function AdminCouponsPage() {
                         )}
                       </td>
                       <td className="py-3 px-4 text-gray-500 dark:text-gray-400">
-                        {c.min_order_amount ? `Rs ${parseFloat(c.min_order_amount).toFixed(2)}` : "—"}
+                        {c.minOrderValue ? `Rs ${parseFloat(String(c.minOrderValue)).toFixed(2)}` : "—"}
                       </td>
                       <td className="py-3 px-4 text-center text-gray-500 dark:text-gray-400">
-                        {c.used_count}{c.usage_limit ? `/${c.usage_limit}` : ""}
+                        {c.usedCount}{c.maxUses ? `/${c.maxUses}` : ""}
                       </td>
                       <td className="py-3 px-4 text-xs text-gray-500 dark:text-gray-400">
-                        {c.starts_at || c.expires_at ? (
+                        {c.expiresAt ? (
                           <span className="inline-flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            {c.starts_at ? new Date(c.starts_at).toLocaleDateString() : "—"}
-                            {" → "}
-                            {c.expires_at ? new Date(c.expires_at).toLocaleDateString() : "∞"}
+                            {"— → "}
+                            {c.expiresAt ? new Date(c.expiresAt).toLocaleDateString() : "∞"}
                           </span>
                         ) : (
                           "No limit"

@@ -10,7 +10,7 @@ interface OrderData {
   id: number;
   total: string;
   status: string;
-  created_at: string;
+  createdAt: string;
   items_count?: number;
   items?: Array<{ id: number }>;
 }
@@ -29,7 +29,7 @@ export default function DashboardPage() {
   const totalSpent = orders.reduce((sum, o) => sum + parseFloat(o.total || "0"), 0);
   const pendingOrders = orders.filter((o) => o.status === "pending" || o.status === "processing").length;
   const thisMonthOrders = orders.filter((o) => {
-    const d = new Date(o.created_at);
+    const d = new Date(o.createdAt);
     const now = new Date();
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   });
@@ -117,7 +117,7 @@ export default function DashboardPage() {
                       #{order.id.toString().padStart(4, "0")}
                     </td>
                     <td className="px-5 py-3.5 text-gray-500">
-                      {new Date(order.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      {new Date(order.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </td>
                     <td className="px-5 py-3.5 font-medium text-dark-text">
                       Rs {parseFloat(order.total).toFixed(2)}

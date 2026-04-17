@@ -17,8 +17,11 @@ import {
 interface OrderRow {
   id: number;
   total: string;
+  totalAmount?: number;
+  orderNumber?: string;
   status: string;
-  created_at: string;
+  createdAt: string;
+  customer?: { id: number; name: string; email: string; phone: string };
   user?: { id: number; name: string; email: string; phone: string };
   items?: Array<{
     id: number;
@@ -61,10 +64,10 @@ export default function AdminOrdersPage() {
         search: search || undefined,
         status: statusFilter || undefined,
         page,
-        per_page: 15,
+        perPage: 15,
       });
       setOrders(data.data || []);
-      setLastPage(data.last_page || 1);
+      setLastPage(data.lastPage || data.last_page || 1);
       setTotal(data.total || 0);
     } catch {
       toast("Failed to load orders", "error");
@@ -218,7 +221,7 @@ export default function AdminOrdersPage() {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-gray-500 dark:text-gray-400">
-                        {new Date(o.created_at).toLocaleDateString()}
+                        {new Date(o.createdAt).toLocaleDateString()}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <button
@@ -363,7 +366,7 @@ export default function AdminOrdersPage() {
               </div>
 
               <div className="text-xs text-gray-400">
-                Created: {new Date(selected.created_at).toLocaleString()}
+                Created: {new Date(selected.createdAt).toLocaleString()}
               </div>
             </div>
           </div>

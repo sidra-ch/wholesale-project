@@ -26,16 +26,16 @@ interface CategoryRow {
   name: string;
   slug: string;
   image: string;
-  sort_order: number;
-  is_active: boolean;
+  sortOrder: number;
+  isActive: boolean;
   products_count: number;
 }
 
 const emptyForm = {
   name: "",
   image: "",
-  sort_order: "0",
-  is_active: true,
+  sortOrder: "0",
+  isActive: true,
 };
 
 export default function AdminCategoriesPage() {
@@ -75,8 +75,8 @@ export default function AdminCategoriesPage() {
     setForm({
       name: c.name,
       image: c.image || "",
-      sort_order: String(c.sort_order),
-      is_active: c.is_active,
+      sortOrder: String(c.sortOrder),
+      isActive: c.isActive,
     });
     setShowModal(true);
   };
@@ -106,8 +106,8 @@ export default function AdminCategoriesPage() {
       const payload = {
         name: form.name,
         image: form.image || null,
-        sort_order: Number(form.sort_order),
-        is_active: form.is_active,
+        sort_order: Number(form.sortOrder),
+        is_active: form.isActive,
       };
       if (editing) {
         await updateCategory(editing.id, payload);
@@ -214,7 +214,7 @@ export default function AdminCategoriesPage() {
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-gray-900 dark:text-white">{c.name}</h3>
                   <div className="flex items-center gap-2">
-                    {c.is_active ? (
+                    {c.isActive ? (
                       <Eye className="h-4 w-4 text-emerald-500" />
                     ) : (
                       <EyeOff className="h-4 w-4 text-gray-300" />
@@ -224,7 +224,7 @@ export default function AdminCategoriesPage() {
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   {c.products_count} product{c.products_count !== 1 ? "s" : ""}{" "}
-                  · Order #{c.sort_order}
+                  · Order #{c.sortOrder}
                 </p>
               </div>
             </div>
@@ -306,9 +306,9 @@ export default function AdminCategoriesPage() {
                 </label>
                 <input
                   type="number"
-                  value={form.sort_order}
+                  value={form.sortOrder}
                   onChange={(e) =>
-                    setForm({ ...form, sort_order: e.target.value })
+                    setForm({ ...form, sortOrder: e.target.value })
                   }
                   className="w-full border border-gray-200 dark:border-white/[0.06] dark:bg-white/[0.03] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#3B82F6] dark:text-white"
                 />
@@ -362,9 +362,9 @@ export default function AdminCategoriesPage() {
               <label className="flex items-center gap-2 text-sm cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={form.is_active}
+                  checked={form.isActive}
                   onChange={(e) =>
-                    setForm({ ...form, is_active: e.target.checked })
+                    setForm({ ...form, isActive: e.target.checked })
                   }
                   className="rounded border-gray-300 dark:border-white/[0.1] text-[#3B82F6] focus:ring-[#3B82F6]"
                 />

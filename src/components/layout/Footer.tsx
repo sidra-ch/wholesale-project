@@ -3,17 +3,39 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "./Container";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, ArrowRight } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-[#FFF1E8] border-t border-[#F2D6D6]/50">
-      <Container className="py-14">
+    <footer className="relative bg-gradient-to-b from-[#2E1B12] to-[#1a0f09] text-white overflow-hidden">
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      {/* Top glow accent */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-candy/5 rounded-full blur-[120px]" />
+
+      {/* Top CTA strip */}
+      <div className="relative border-b border-white/[0.06]">
+        <Container className="py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-bold text-white">Ready to grow your retail business?</h3>
+            <p className="text-sm text-white/40 mt-0.5">Join 500+ retailers who trust Arslan Wholesale.</p>
+          </div>
+          <Link
+            href="/register"
+            className="group inline-flex items-center gap-2 px-6 py-3 bg-candy hover:bg-[#C62828] text-white rounded-2xl text-sm font-semibold transition-all duration-300 shadow-lg shadow-candy/20 hover:shadow-candy/40"
+          >
+            Get Started Free
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </Container>
+      </div>
+
+      <Container className="relative py-14">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10">
           {/* Brand */}
           <div className="col-span-full lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <div className="w-10 h-10 rounded-2xl overflow-hidden">
+              <div className="w-10 h-10 rounded-2xl overflow-hidden ring-2 ring-white/10">
                 <Image
                   src="/images/logo.jpg"
                   alt="Arslan Wholesale"
@@ -22,33 +44,29 @@ export function Footer() {
                   className="object-cover"
                 />
               </div>
-              <span className="text-lg font-bold text-[#2E1B12]">
+              <span className="text-lg font-bold text-white">
                 Arslan <span className="text-candy">Wholesale</span>
               </span>
             </Link>
-            <p className="text-sm text-[#6B5B55] leading-relaxed mb-5">
+            <p className="text-sm text-white/40 leading-relaxed mb-5">
               Your trusted wholesale partner for premium products. Buy more, save more, grow faster.
             </p>
             <div className="flex gap-2.5">
-              {["facebook", "instagram", "whatsapp", "youtube"].map((s) => (
+              {[
+                { name: "facebook", svg: <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /> },
+                { name: "instagram", svg: <><rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="5" /><circle cx="17.5" cy="6.5" r="1.5" /></> },
+                { name: "whatsapp", svg: <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /> },
+                { name: "youtube", svg: <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /> },
+              ].map((s) => (
                 <a
-                  key={s}
+                  key={s.name}
                   href="#"
-                  className="w-9 h-9 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center hover:bg-candy hover:text-white hover:border-candy transition-all text-gray-400"
-                  aria-label={s}
+                  className="w-9 h-9 bg-white/[0.06] border border-white/[0.08] rounded-xl flex items-center justify-center hover:bg-candy hover:text-white hover:border-candy transition-all text-white/40 hover:scale-110"
+                  aria-label={s.name}
                 >
-                  {s === "facebook" && (
-                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
-                  )}
-                  {s === "instagram" && (
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="5" /><circle cx="17.5" cy="6.5" r="1.5" /></svg>
-                  )}
-                  {s === "whatsapp" && (
-                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
-                  )}
-                  {s === "youtube" && (
-                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>
-                  )}
+                  <svg className="h-4 w-4" fill={s.name === "instagram" ? "none" : "currentColor"} stroke={s.name === "instagram" ? "currentColor" : "none"} strokeWidth={s.name === "instagram" ? "2" : "0"} viewBox="0 0 24 24">
+                    {s.svg}
+                  </svg>
                 </a>
               ))}
             </div>
@@ -56,7 +74,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-bold text-[#2E1B12] text-sm uppercase tracking-wider mb-4">Quick Links</h4>
+            <h4 className="font-bold text-white text-sm uppercase tracking-wider mb-4">Quick Links</h4>
             <ul className="space-y-2.5">
               {[
                 { label: "Home", href: "/" },
@@ -66,7 +84,7 @@ export function Footer() {
                 { label: "Categories", href: "/categories" },
               ].map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-[#6B5B55] hover:text-candy transition-colors">
+                  <Link href={link.href} className="text-sm text-white/40 hover:text-candy transition-colors hover:translate-x-1 inline-block">
                     {link.label}
                   </Link>
                 </li>
@@ -76,11 +94,11 @@ export function Footer() {
 
           {/* Customer Service */}
           <div>
-            <h4 className="font-bold text-[#2E1B12] text-sm uppercase tracking-wider mb-4">Customer Service</h4>
+            <h4 className="font-bold text-white text-sm uppercase tracking-wider mb-4">Customer Service</h4>
             <ul className="space-y-2.5">
               {["Help Center", "Shipping Info", "Returns & Refunds", "Terms & Conditions", "Privacy Policy"].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-sm text-[#6B5B55] hover:text-candy transition-colors">{item}</a>
+                  <a href="#" className="text-sm text-white/40 hover:text-candy transition-colors hover:translate-x-1 inline-block">{item}</a>
                 </li>
               ))}
             </ul>
@@ -88,11 +106,11 @@ export function Footer() {
 
           {/* Categories */}
           <div>
-            <h4 className="font-bold text-[#2E1B12] text-sm uppercase tracking-wider mb-4">Categories</h4>
+            <h4 className="font-bold text-white text-sm uppercase tracking-wider mb-4">Categories</h4>
             <ul className="space-y-2.5">
               {["Food & Grocery", "Beverages", "Personal Care", "Household", "Electronics"].map((cat) => (
                 <li key={cat}>
-                  <Link href="/products" className="text-sm text-[#6B5B55] hover:text-candy transition-colors">{cat}</Link>
+                  <Link href="/products" className="text-sm text-white/40 hover:text-candy transition-colors hover:translate-x-1 inline-block">{cat}</Link>
                 </li>
               ))}
             </ul>
@@ -100,19 +118,34 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-bold text-[#2E1B12] text-sm uppercase tracking-wider mb-4">Contact Info</h4>
+            <h4 className="font-bold text-white text-sm uppercase tracking-wider mb-4">Contact Info</h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-2.5">
-                <Phone className="h-4 w-4 text-candy mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-[#6B5B55]">+92 347 5175875</span>
+                <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Phone className="h-3.5 w-3.5 text-candy" />
+                </div>
+                <div>
+                  <p className="text-xs text-white/30 mb-0.5">Call Us</p>
+                  <span className="text-sm text-white/60">+92 347 5175875</span>
+                </div>
               </li>
               <li className="flex items-start gap-2.5">
-                <Mail className="h-4 w-4 text-candy mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-[#6B5B55]">info@arslanwholesale.com</span>
+                <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Mail className="h-3.5 w-3.5 text-candy" />
+                </div>
+                <div>
+                  <p className="text-xs text-white/30 mb-0.5">Email</p>
+                  <span className="text-sm text-white/60">info@arslanwholesale.com</span>
+                </div>
               </li>
               <li className="flex items-start gap-2.5">
-                <MapPin className="h-4 w-4 text-candy mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-[#6B5B55]">Nankari Bazar, Rawalpindi, Pakistan</span>
+                <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <MapPin className="h-3.5 w-3.5 text-candy" />
+                </div>
+                <div>
+                  <p className="text-xs text-white/30 mb-0.5">Location</p>
+                  <span className="text-sm text-white/60">Nankari Bazar, Rawalpindi</span>
+                </div>
               </li>
             </ul>
           </div>
@@ -120,14 +153,14 @@ export function Footer() {
       </Container>
 
       {/* Bottom Bar */}
-      <div className="border-t border-[#F2D6D6]/50">
+      <div className="relative border-t border-white/[0.06]">
         <Container className="py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-[#9A8B86]">
+          <p className="text-xs text-white/30">
             &copy; {new Date().getFullYear()} Arslan Wholesale. All rights reserved.
           </p>
           <div className="flex items-center gap-3">
             {["VISA", "Mastercard", "JazzCash", "Easypaisa"].map((pm) => (
-              <span key={pm} className="text-[10px] font-bold text-gray-300 bg-gray-50 px-2.5 py-1 rounded border border-gray-100 uppercase tracking-wide">
+              <span key={pm} className="text-[10px] font-bold text-white/20 bg-white/[0.04] px-2.5 py-1 rounded-lg border border-white/[0.06] uppercase tracking-wide">
                 {pm}
               </span>
             ))}

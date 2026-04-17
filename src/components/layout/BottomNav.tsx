@@ -6,6 +6,7 @@ import { Home, Search, ShoppingCart, User, Heart } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
 import { useAuthStore } from "@/store/auth";
+import { useHydration } from "@/hooks/useHydration";
 
 const navItems = [
   { icon: Home, label: "Home", href: "/" },
@@ -20,6 +21,7 @@ export function BottomNav() {
   const totalItems = useCartStore((s) => s.totalItems());
   const wishlistCount = useWishlistStore((s) => s.items.length);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const hydrated = useHydration();
   const isAdmin = pathname.startsWith("/admin");
 
   if (isAdmin) return null;
@@ -41,12 +43,12 @@ export function BottomNav() {
             >
               <div className="relative">
                 <item.icon className={`h-5 w-5 ${isActive ? "text-candy" : ""}`} />
-                {item.isCart && totalItems > 0 && (
+                {hydrated && item.isCart && totalItems > 0 && (
                   <span className="absolute -top-1.5 -right-2 w-4 h-4 bg-candy text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                     {totalItems > 9 ? "9+" : totalItems}
                   </span>
                 )}
-                {item.isWishlist && wishlistCount > 0 && (
+                {hydrated && item.isWishlist && wishlistCount > 0 && (
                   <span className="absolute -top-1.5 -right-2 w-4 h-4 bg-candy text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                     {wishlistCount > 9 ? "9+" : wishlistCount}
                   </span>

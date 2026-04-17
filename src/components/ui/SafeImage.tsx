@@ -10,7 +10,7 @@ type SafeImageProps = Omit<ImageProps, "onError"> & {
 };
 
 export function SafeImage({ fallback = PLACEHOLDER, src, alt, ...props }: SafeImageProps) {
-  const [imgSrc, setImgSrc] = useState(src);
+  const [imgSrc, setImgSrc] = useState(src || fallback);
 
   return (
     <Image

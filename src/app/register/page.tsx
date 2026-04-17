@@ -43,9 +43,31 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterForm) => {
-    console.log("Register:", data);
-    toast("Registration submitted successfully!");
-    setSubmitted(true);
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          password: data.password,
+          business_name: data.businessName,
+          business_type: data.businessType,
+          tax_id: data.taxId,
+          address: data.address,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        toast(json.error || "Registration failed");
+        return;
+      }
+      toast("Registration submitted successfully!");
+      setSubmitted(true);
+    } catch {
+      toast("Network error. Please try again.");
+    }
   };
 
   if (submitted) {

@@ -23,14 +23,14 @@ import {
 
 interface Subcategory {
   id: number;
-  parent_id: number;
+  parentId: number;
   name: string;
   slug: string;
   image?: string;
-  sort_order: number;
-  is_active: boolean;
+  sortOrder: number;
+  isActive: boolean;
   parent?: { id: number; name: string };
-  products_count?: number;
+  productsCount?: number;
 }
 
 interface ParentCategory {
@@ -61,12 +61,12 @@ export default function AdminSubcategoriesPage() {
     try {
       const data = await fetchSubcategories({
         search: search || undefined,
-        parent_id: parentFilter || undefined,
+        parentId: parentFilter || undefined,
         page,
-        per_page: 20,
+        perPage: 20,
       });
       setSubcategories(data.data || []);
-      setLastPage(data.last_page || 1);
+      setLastPage(data.lastPage || data.last_page || 1);
       setTotal(data.total || 0);
     } catch {
       toast("Failed to load subcategories", "error");
@@ -78,7 +78,7 @@ export default function AdminSubcategoriesPage() {
 
   useEffect(() => {
     fetchAdminCategories().then((data) => {
-      const cats = (data.data || data || []).filter((c: ParentCategory & { parent_id?: number }) => !c.parent_id);
+      const cats = (data.data || data || []).filter((c: ParentCategory & { parentId?: number }) => !c.parentId);
       setParents(cats);
     }).catch(() => {});
   }, []);
@@ -93,10 +93,10 @@ export default function AdminSubcategoriesPage() {
     setEditing(sub);
     setFormData({
       name: sub.name,
-      parent_id: sub.parent_id.toString(),
+      parent_id: sub.parentId.toString(),
       slug: sub.slug,
-      sort_order: sub.sort_order.toString(),
-      is_active: sub.is_active,
+      sort_order: sub.sortOrder.toString(),
+      is_active: sub.isActive,
     });
     setShowForm(true);
   };
@@ -215,15 +215,15 @@ export default function AdminSubcategoriesPage() {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-gray-400 font-mono text-xs">{sub.slug}</td>
-                    <td className="py-3 px-4 text-center text-gray-500 dark:text-gray-400">{sub.products_count ?? 0}</td>
-                    <td className="py-3 px-4 text-center text-gray-500 dark:text-gray-400">{sub.sort_order}</td>
+                    <td className="py-3 px-4 text-center text-gray-500 dark:text-gray-400">{sub.productsCount ?? 0}</td>
+                    <td className="py-3 px-4 text-center text-gray-500 dark:text-gray-400">{sub.sortOrder}</td>
                     <td className="py-3 px-4 text-center">
                       <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${
-                        sub.is_active
+                        sub.isActive
                           ? "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400"
                           : "bg-gray-100 text-gray-500 dark:bg-gray-500/10 dark:text-gray-500"
                       }`}>
-                        {sub.is_active ? "Active" : "Inactive"}
+                        {sub.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-center">

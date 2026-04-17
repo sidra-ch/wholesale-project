@@ -1,45 +1,45 @@
 export interface ProductImage {
   id: number;
-  product_id: number;
-  image_url: string;
-  public_id?: string;
+  productId: number;
+  imageUrl: string;
+  publicId?: string;
   type: "image" | "video";
-  alt_text?: string;
-  sort_order: number;
+  altText?: string;
+  sortOrder: number;
 }
 
 export interface ApiProduct {
   id: number;
-  category_id: number;
+  categoryId: number;
   name: string;
   slug: string;
   sku: string;
   description: string;
-  short_description?: string;
-  retail_price: string;
-  wholesale_price: string;
-  distributor_price: string;
-  cost_price: string;
+  shortDescription?: string;
+  retailPrice: string;
+  wholesalePrice: string;
+  distributorPrice: string;
+  costPrice: string;
   moq: number;
   stock: number;
-  low_stock_threshold: number;
+  lowStockThreshold: number;
   brand: string;
   unit: string;
   weight?: string;
-  is_active: boolean;
-  is_featured: boolean;
+  isActive: boolean;
+  isFeatured: boolean;
   images: ProductImage[];
   category?: { id: number; name: string; slug: string };
 }
 
 export interface ApiCategory {
   id: number;
-  parent_id?: number;
+  parentId?: number;
   name: string;
   slug: string;
   image: string;
-  sort_order: number;
-  is_active: boolean;
+  sortOrder: number;
+  isActive: boolean;
   products_count?: number;
 }
 

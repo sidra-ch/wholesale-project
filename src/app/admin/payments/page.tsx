@@ -19,18 +19,18 @@ import {
 
 interface Payment {
   id: number;
-  order_id: number;
+  orderId: number;
   amount: string;
-  payment_method: string;
+  paymentMethod: string;
   status: string;
-  transaction_id?: string;
-  paid_at?: string;
+  transactionId?: string;
+  paidAt?: string;
   notes?: string;
-  created_at: string;
+  createdAt: string;
   order?: {
     id: number;
-    order_number: string;
-    total_amount: string;
+    orderNumber: string;
+    totalAmount: string;
     user?: { name: string; email: string };
   };
 }
@@ -74,10 +74,10 @@ export default function AdminPaymentsPage() {
         search: search || undefined,
         status: statusFilter || undefined,
         page,
-        per_page: 15,
+        perPage: 15,
       });
       setPayments(data.data || []);
-      setLastPage(data.last_page || 1);
+      setLastPage(data.lastPage || data.last_page || 1);
       setTotal(data.total || 0);
     } catch {
       toast("Failed to load payments", "error");
@@ -90,7 +90,7 @@ export default function AdminPaymentsPage() {
   const openDetail = (p: Payment) => {
     setSelected(p);
     setNewStatus(p.status);
-    setTxnId(p.transaction_id || "");
+    setTxnId(p.transactionId || "");
     setNotes(p.notes || "");
   };
 
@@ -209,7 +209,7 @@ export default function AdminPaymentsPage() {
                   return (
                     <tr key={p.id} className="border-b border-gray-50 dark:border-white/[0.04] hover:bg-gray-50/50 dark:hover:bg-white/[0.03] transition-colors">
                       <td className="py-3 px-4 font-semibold text-gray-900 dark:text-white">
-                        {p.order?.order_number || `#${p.order_id}`}
+                        {p.order?.orderNumber || `#${p.orderId}`}
                       </td>
                       <td className="py-3 px-4">
                         <p className="font-medium text-gray-900 dark:text-white">{p.order?.user?.name || "—"}</p>
@@ -220,7 +220,7 @@ export default function AdminPaymentsPage() {
                         {parseFloat(p.amount).toFixed(2)}
                       </td>
                       <td className="py-3 px-4 text-gray-500 dark:text-gray-400 text-xs">
-                        {methodLabels[p.payment_method] || p.payment_method}
+                        {methodLabels[p.paymentMethod] || p.paymentMethod}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${cfg.color}`}>
@@ -229,7 +229,7 @@ export default function AdminPaymentsPage() {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-gray-500 dark:text-gray-400 text-xs">
-                        {new Date(p.created_at).toLocaleDateString()}
+                        {new Date(p.createdAt).toLocaleDateString()}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <button onClick={() => openDetail(p)} className="text-sm text-[#3B82F6] font-medium hover:underline inline-flex items-center gap-1">
@@ -273,7 +273,7 @@ export default function AdminPaymentsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Order</p>
-                  <p className="font-medium text-gray-900 dark:text-white">{selected.order?.order_number || `#${selected.order_id}`}</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{selected.order?.orderNumber || `#${selected.orderId}`}</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Amount</p>
@@ -281,18 +281,18 @@ export default function AdminPaymentsPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Method</p>
-                  <p className="font-medium text-gray-900 dark:text-white">{methodLabels[selected.payment_method] || selected.payment_method}</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{methodLabels[selected.paymentMethod] || selected.paymentMethod}</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Date</p>
-                  <p className="font-medium text-gray-900 dark:text-white">{new Date(selected.created_at).toLocaleDateString()}</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{new Date(selected.createdAt).toLocaleDateString()}</p>
                 </div>
               </div>
 
-              {selected.transaction_id && (
+              {selected.transactionId && (
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Transaction ID</p>
-                  <p className="font-mono text-sm text-gray-900 dark:text-white">{selected.transaction_id}</p>
+                  <p className="font-mono text-sm text-gray-900 dark:text-white">{selected.transactionId}</p>
                 </div>
               )}
 

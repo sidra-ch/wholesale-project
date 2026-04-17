@@ -17,18 +17,17 @@ interface Supplier {
   address: string | null;
   city: string | null;
   country: string | null;
-  contact_person: string | null;
-  contact_phone: string | null;
-  payment_terms: string | null;
+  company: string | null;
+  paymentTerms: string | null;
   status: "active" | "inactive";
   notes: string | null;
-  purchase_orders_count?: number;
-  created_at: string;
+  purchaseOrdersCount?: number;
+  createdAt: string;
 }
 
-const emptyForm: { name: string; email: string; phone: string; address: string; city: string; country: string; contact_person: string; contact_phone: string; payment_terms: string; status: string; notes: string } = {
+const emptyForm: { name: string; email: string; phone: string; address: string; city: string; country: string; company: string; payment_terms: string; status: string; notes: string } = {
   name: "", email: "", phone: "", address: "", city: "", country: "",
-  contact_person: "", contact_phone: "", payment_terms: "", status: "active", notes: "",
+  company: "", payment_terms: "", status: "active", notes: "",
 };
 
 export default function SuppliersPage() {
@@ -55,9 +54,9 @@ export default function SuppliersPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetchSuppliers({ search, status: statusFilter || undefined, page, per_page: 15 });
+      const res = await fetchSuppliers({ search, status: statusFilter || undefined, page, perPage: 15 });
       setSuppliers(res.data);
-      setLastPage(res.last_page);
+      setLastPage(res.lastPage || res.last_page || 1);
       setTotal(res.total);
     } catch { showToast("error", "Failed to load suppliers"); }
     setLoading(false);
@@ -76,8 +75,8 @@ export default function SuppliersPage() {
     setForm({
       name: s.name, email: s.email || "", phone: s.phone || "",
       address: s.address || "", city: s.city || "", country: s.country || "",
-      contact_person: s.contact_person || "", contact_phone: s.contact_phone || "",
-      payment_terms: s.payment_terms || "", status: s.status, notes: s.notes || "",
+      company: s.company || "",
+      payment_terms: s.paymentTerms || "", status: s.status, notes: s.notes || "",
     });
     setShowModal(true);
   };
@@ -181,14 +180,14 @@ export default function SuppliersPage() {
                     </td>
                     <td className="py-3.5 px-3 hidden md:table-cell">
                       <div className="space-y-1">
-                        {s.contact_person && <p className="text-xs text-gray-500">{s.contact_person}</p>}
+                        {s.company && <p className="text-xs text-gray-500">{s.company}</p>}
                         {s.phone && <p className="text-xs text-gray-400 flex items-center gap-1"><Phone className="h-3 w-3" />{s.phone}</p>}
                       </div>
                     </td>
                     <td className="py-3.5 px-3 hidden lg:table-cell text-gray-500 text-xs">
                       {[s.city, s.country].filter(Boolean).join(", ") || "—"}
                     </td>
-                    <td className="py-3.5 px-3 text-center font-medium">{s.purchase_orders_count ?? 0}</td>
+                    <td className="py-3.5 px-3 text-center font-medium">{s.purchaseOrdersCount ?? 0}</td>
                     <td className="py-3.5 px-3 text-center">
                       <span className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold ${
                         s.status === "active" ? "bg-emerald-500/10 text-emerald-500" : "bg-gray-200/80 dark:bg-white/[0.06] text-gray-500"
@@ -232,10 +231,10 @@ export default function SuppliersPage() {
               {showDetail.address && <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300"><MapPin className="h-4 w-4 text-gray-400" />{showDetail.address}</div>}
               {(showDetail.city || showDetail.country) && <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300"><Building2 className="h-4 w-4 text-gray-400" />{[showDetail.city, showDetail.country].filter(Boolean).join(", ")}</div>}
               <hr className="border-gray-200 dark:border-white/[0.06]" />
-              {showDetail.contact_person && <p><span className="font-medium text-gray-500">Contact:</span> {showDetail.contact_person} {showDetail.contact_phone ? `(${showDetail.contact_phone})` : ""}</p>}
-              {showDetail.payment_terms && <p><span className="font-medium text-gray-500">Payment Terms:</span> {showDetail.payment_terms}</p>}
+              {showDetail.company && <p><span className="font-medium text-gray-500">Company:</span> {showDetail.company}</p>}
+              {showDetail.paymentTerms && <p><span className="font-medium text-gray-500">Payment Terms:</span> {showDetail.paymentTerms}</p>}
               <p><span className="font-medium text-gray-500">Status:</span> <span className={showDetail.status === "active" ? "text-emerald-500" : "text-gray-400"}>{showDetail.status}</span></p>
-              <p><span className="font-medium text-gray-500">Purchase Orders:</span> {showDetail.purchase_orders_count ?? 0}</p>
+              <p><span className="font-medium text-gray-500">Purchase Orders:</span> {showDetail.purchaseOrdersCount ?? 0}</p>
               {showDetail.notes && <p><span className="font-medium text-gray-500">Notes:</span> {showDetail.notes}</p>}
             </div>
           </div>
@@ -282,13 +281,8 @@ export default function SuppliersPage() {
                   className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] text-sm focus:ring-2 focus:ring-[#3B82F6] outline-none" />
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-500 mb-1 block">Contact Person</label>
-                <input value={form.contact_person} onChange={(e) => setForm({ ...form, contact_person: e.target.value })}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] text-sm focus:ring-2 focus:ring-[#3B82F6] outline-none" />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 mb-1 block">Contact Phone</label>
-                <input value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Company</label>
+                <input value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })}
                   className="w-full px-3 py-2.5 rounded-xl border border-gray-200 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] text-sm focus:ring-2 focus:ring-[#3B82F6] outline-none" />
               </div>
               <div>

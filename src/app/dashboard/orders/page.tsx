@@ -9,9 +9,9 @@ interface OrderData {
   id: number;
   total: string;
   status: string;
-  created_at: string;
+  createdAt: string;
   items_count?: number;
-  items?: Array<{ id: number; product_name?: string; quantity: number; price: string }>;
+  items?: Array<{ id: number; productName?: string; quantity: number; price: string }>;
 }
 
 export default function OrdersPage() {
@@ -76,7 +76,7 @@ export default function OrdersPage() {
                       #{order.id.toString().padStart(4, "0")}
                     </td>
                     <td className="px-5 py-3.5 text-gray-500">
-                      {new Date(order.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      {new Date(order.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </td>
                     <td className="px-5 py-3.5 font-medium text-dark-text">
                       Rs {parseFloat(order.total).toFixed(2)}

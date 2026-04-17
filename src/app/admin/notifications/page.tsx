@@ -26,9 +26,9 @@ interface Notification {
   type: string;
   title: string;
   message: string;
-  read_at?: string;
+  isRead?: boolean;
   data?: Record<string, unknown>;
-  created_at: string;
+  createdAt: string;
 }
 
 const typeConfig: Record<string, { icon: React.ElementType; color: string }> = {
@@ -51,12 +51,12 @@ export default function AdminNotificationsPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const params: Record<string, unknown> = { page, per_page: 20 };
+      const params: Record<string, unknown> = { page, perPage: 20 };
       if (filter === "unread") params.read = false;
       if (filter === "read") params.read = true;
       const data = await fetchNotifications(params as Parameters<typeof fetchNotifications>[0]);
       setNotifications(data.data || []);
-      setLastPage(data.last_page || 1);
+      setLastPage(data.lastPage || data.last_page || 1);
       setTotal(data.total || 0);
     } catch {
       toast("Failed to load notifications", "error");
@@ -70,7 +70,7 @@ export default function AdminNotificationsPage() {
     try {
       await markNotificationRead(id);
       setNotifications((prev) =>
-        prev.map((n) => n.id === id ? { ...n, read_at: new Date().toISOString() } : n)
+        prev.map((n) => n.id === id ? { ...n, isRead: true } : n)
       );
     } catch {
       toast("Failed to mark as read", "error");
@@ -81,7 +81,7 @@ export default function AdminNotificationsPage() {
     try {
       await markAllNotificationsRead();
       setNotifications((prev) =>
-        prev.map((n) => ({ ...n, read_at: n.read_at || new Date().toISOString() }))
+        prev.map((n) => ({ ...n, isRead: true }))
       );
       toast("All notifications marked as read");
     } catch {
@@ -89,7 +89,7 @@ export default function AdminNotificationsPage() {
     }
   };
 
-  const unreadCount = notifications.filter((n) => !n.read_at).length;
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const timeSince = (dateStr: string) => {
     const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
@@ -158,7 +158,7 @@ export default function AdminNotificationsPage() {
           <div className="divide-y divide-gray-50 dark:divide-white/[0.04]">
             {notifications.map((n) => {
               const cfg = typeConfig[n.type] || typeConfig.general;
-              const isUnread = !n.read_at;
+              const isUnread = !n.isRead;
               return (
                 <div
                   key={n.id}
@@ -180,7 +180,7 @@ export default function AdminNotificationsPage() {
                       {isUnread && <Circle className="h-2 w-2 fill-[#3B82F6] text-[#3B82F6] shrink-0" />}
                     </div>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{n.message}</p>
-                    <p className="text-xs text-gray-400 mt-1">{timeSince(n.created_at)}</p>
+                    <p className="text-xs text-gray-400 mt-1">{timeSince(n.createdAt)}</p>
                   </div>
                 </div>
               );

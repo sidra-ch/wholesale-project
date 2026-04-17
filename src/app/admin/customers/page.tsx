@@ -22,9 +22,9 @@ interface CustomerRow {
   email: string;
   phone: string;
   status: string;
-  orders_count: number;
-  created_at: string;
-  customer_group?: { id: number; name: string };
+  ordersCount: number;
+  createdAt: string;
+  customerGroup?: { id: number; name: string };
 }
 
 const statusCfg: Record<string, { color: string; label: string }> = {
@@ -50,10 +50,10 @@ export default function AdminCustomersPage() {
         search: search || undefined,
         status: statusFilter || undefined,
         page,
-        per_page: 15,
+        perPage: 15,
       });
       setCustomers(data.data || []);
-      setLastPage(data.last_page || 1);
+      setLastPage(data.lastPage || data.last_page || 1);
       setTotal(data.total || 0);
     } catch {
       toast("Failed to load customers", "error");
@@ -208,11 +208,11 @@ export default function AdminCustomersPage() {
                       <td className="py-3 px-4 text-center">
                         <span className="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300 font-medium">
                           <ShoppingBag className="h-3 w-3" />
-                          {c.orders_count}
+                          {c.ordersCount}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-gray-500 dark:text-gray-400 text-xs">
-                        {c.customer_group?.name || "—"}
+                        {c.customerGroup?.name || "—"}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <span
@@ -222,7 +222,7 @@ export default function AdminCustomersPage() {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-gray-500 dark:text-gray-400 text-xs">
-                        {new Date(c.created_at).toLocaleDateString()}
+                        {new Date(c.createdAt).toLocaleDateString()}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <div className="inline-flex gap-1">

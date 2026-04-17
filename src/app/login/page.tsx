@@ -34,22 +34,34 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginForm) => {
-    // Simulate API call
-    console.log("Login:", data);
-    login(
-      {
-        id: "1",
-        email: data.email,
-        name: "Demo User",
-        businessName: "Demo Retail Store",
-        phone: "+1 555 0000",
-        status: "approved",
-        role: data.email === "admin@sweetwholesale.com" ? "admin" : "customer",
-      },
-      "demo-token-123"
-    );
-    toast("Welcome back! You are now logged in.");
-    router.push("/dashboard");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        toast(json.error || "Login failed");
+        return;
+      }
+      login(
+        {
+          id: String(json.user.id),
+          email: json.user.email,
+          name: json.user.name,
+          businessName: json.user.businessName || "",
+          phone: json.user.phone || "",
+          status: json.user.status,
+          role: json.user.role,
+        },
+        json.token
+      );
+      toast("Welcome back! You are now logged in.");
+      router.push(json.user.role === "customer" ? "/dashboard" : "/admin");
+    } catch {
+      toast("Network error. Please try again.");
+    }
   };
 
   return (

@@ -1,0 +1,542 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────────────────────────────────────────
+// 1) Customer Groups
+// ───────────────────────────────────────────────
+model CustomerGroup {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(50)
+  slug        String   @unique @db.VarChar(50)
+  description String?  @db.VarChar(255)
+  discountPct Decimal  @default(0) @map("discount_pct") @db.Decimal(5, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  users        User[]
+  pricingRules PricingRule[]
+
+  @@map("customer_groups")
+}
+
+// ───────────────────────────────────────────────
+// 2) Users
+// ───────────────────────────────────────────────
+enum UserRole {
+  admin
+  customer
+}
+
+enum UserStatus {
+  pending
+  approved
+  rejected
+}
+
+model User {
+  id              Int        @id @default(autoincrement())
+  name            String     @db.VarChar(100)
+  email           String     @unique @db.VarChar(191)
+  phone           String?    @db.VarChar(20)
+  password        String     @db.VarChar(255)
+  role            UserRole   @default(customer)
+  status          UserStatus @default(pending)
+  customerGroupId Int?       @map("customer_group_id")
+  businessName    String?    @map("business_name") @db.VarChar(150)
+  businessType    String?    @map("business_type") @db.VarChar(50)
+  taxId           String?    @map("tax_id") @db.VarChar(50)
+  emailVerifiedAt DateTime?  @map("email_verified_at")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  customerGroup CustomerGroup? @relation(fields: [customerGroupId], references: [id], onDelete: SetNull)
+  addresses     Address[]
+  carts         Cart[]
+  orders        Order[]
+  stockLogs     StockLog[]     @relation("StockLogCreator")
+  activityLogs  ActivityLog[]
+
+  @@index([status])
+  @@index([role])
+  @@map("users")
+}
+
+// ───────────────────────────────────────────────
+// 3) Categories (self-referencing for subcategories)
+// ───────────────────────────────────────────────
+model Category {
+  id        Int      @id @default(autoincrement())
+  parentId  Int?     @map("parent_id")
+  name      String   @db.VarChar(100)
+  slug      String   @unique @db.VarChar(120)
+  image     String?  @db.VarChar(500)
+  sortOrder Int      @default(0) @map("sort_order")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryTree")
+  products Product[]
+
+  @@map("categories")
+}
+
+// ───────────────────────────────────────────────
+// 4) Products
+// ───────────────────────────────────────────────
+model Product {
+  id                Int      @id @default(autoincrement())
+  categoryId        Int      @map("category_id")
+  name              String   @db.VarChar(200)
+  slug              String   @unique @db.VarChar(220)
+  sku               String   @unique @db.VarChar(50)
+  description       String?  @db.Text
+  shortDescription  String?  @map("short_description") @db.VarChar(500)
+  retailPrice       Decimal  @default(0) @map("retail_price") @db.Decimal(10, 2)
+  wholesalePrice    Decimal  @default(0) @map("wholesale_price") @db.Decimal(10, 2)
+  distributorPrice  Decimal  @default(0) @map("distributor_price") @db.Decimal(10, 2)
+  costPrice         Decimal  @default(0) @map("cost_price") @db.Decimal(10, 2)
+  moq               Int      @default(1)
+  stock             Int      @default(0)
+  lowStockThreshold Int      @default(10) @map("low_stock_threshold")
+  brand             String?  @db.VarChar(100)
+  unit              String   @default("piece") @db.VarChar(30)
+  weight            Decimal? @db.Decimal(8, 2)
+  isActive          Boolean  @default(true) @map("is_active")
+  isFeatured        Boolean  @default(false) @map("is_featured")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  category     Category       @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  images       ProductImage[]
+  pricingRules PricingRule[]
+  carts        Cart[]
+  orderItems   OrderItem[]
+  stockLogs    StockLog[]
+
+  @@index([brand])
+  @@index([isActive])
+  @@index([isFeatured])
+  @@index([stock])
+  @@map("products")
+}
+
+// ───────────────────────────────────────────────
+// 5) Product Images
+// ───────────────────────────────────────────────
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  productId Int      @map("product_id")
+  imageUrl  String   @map("image_url") @db.VarChar(500)
+  publicId  String?  @map("public_id") @db.VarChar(200)
+  type      String   @default("image") @db.VarChar(10)
+  altText   String?  @map("alt_text") @db.VarChar(200)
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+// ───────────────────────────────────────────────
+// 6) Addresses
+// ───────────────────────────────────────────────
+model Address {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  label      String?  @db.VarChar(50)
+  name       String   @db.VarChar(100)
+  phone      String   @db.VarChar(20)
+  address    String   @db.VarChar(500)
+  city       String   @db.VarChar(100)
+  state      String?  @db.VarChar(100)
+  postalCode String?  @map("postal_code") @db.VarChar(20)
+  country    String   @default("US") @db.VarChar(60)
+  isDefault  Boolean  @default(false) @map("is_default")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+// ───────────────────────────────────────────────
+// 7) Carts
+// ───────────────────────────────────────────────
+model Cart {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  productId Int      @map("product_id")
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("carts")
+}
+
+// ───────────────────────────────────────────────
+// 8) Orders
+// ───────────────────────────────────────────────
+enum OrderStatus {
+  pending
+  processing
+  shipped
+  delivered
+  cancelled
+}
+
+enum PaymentStatus {
+  unpaid
+  paid
+  refunded
+}
+
+model Order {
+  id              Int           @id @default(autoincrement())
+  userId          Int           @map("user_id")
+  orderNumber     String        @unique @map("order_number") @db.VarChar(30)
+  subtotal        Decimal       @default(0) @db.Decimal(12, 2)
+  shippingAmount  Decimal       @default(0) @map("shipping_amount") @db.Decimal(10, 2)
+  taxAmount       Decimal       @default(0) @map("tax_amount") @db.Decimal(10, 2)
+  discountAmount  Decimal       @default(0) @map("discount_amount") @db.Decimal(10, 2)
+  totalAmount     Decimal       @default(0) @map("total_amount") @db.Decimal(12, 2)
+  status          OrderStatus   @default(pending)
+  paymentStatus   PaymentStatus @default(unpaid) @map("payment_status")
+  shippingAddress Json          @map("shipping_address")
+  notes           String?       @db.Text
+  shippedAt       DateTime?     @map("shipped_at")
+  deliveredAt     DateTime?     @map("delivered_at")
+  cancelledAt     DateTime?     @map("cancelled_at")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  orderItems OrderItem[]
+  payments   Payment[]
+  invoice    Invoice?
+
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+// ───────────────────────────────────────────────
+// 9) Order Items
+// ───────────────────────────────────────────────
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  orderId     Int      @map("order_id")
+  productId   Int      @map("product_id")
+  productName String   @map("product_name") @db.VarChar(200)
+  sku         String   @db.VarChar(50)
+  priceAtTime Decimal  @map("price_at_time") @db.Decimal(10, 2)
+  quantity    Int
+  subtotal    Decimal  @db.Decimal(12, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@map("order_items")
+}
+
+// ───────────────────────────────────────────────
+// 10) Payments
+// ───────────────────────────────────────────────
+enum PaymentMethod {
+  cod
+  bank_transfer
+  credit_card
+  online
+}
+
+enum PaymentMethodStatus {
+  pending
+  paid
+  failed
+  refunded
+}
+
+model Payment {
+  id            Int                 @id @default(autoincrement())
+  orderId       Int                 @map("order_id")
+  amount        Decimal             @db.Decimal(12, 2)
+  paymentMethod PaymentMethod       @default(cod) @map("payment_method")
+  status        PaymentMethodStatus @default(pending)
+  transactionId String?             @map("transaction_id") @db.VarChar(100)
+  paidAt        DateTime?           @map("paid_at")
+  notes         String?             @db.VarChar(500)
+  createdAt     DateTime            @default(now()) @map("created_at")
+  updatedAt     DateTime            @updatedAt @map("updated_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("payments")
+}
+
+// ───────────────────────────────────────────────
+// 11) Invoices
+// ───────────────────────────────────────────────
+model Invoice {
+  id            Int      @id @default(autoincrement())
+  orderId       Int      @unique @map("order_id")
+  invoiceNumber String   @unique @map("invoice_number") @db.VarChar(30)
+  subtotal      Decimal  @db.Decimal(12, 2)
+  taxAmount     Decimal  @default(0) @map("tax_amount") @db.Decimal(10, 2)
+  totalAmount   Decimal  @map("total_amount") @db.Decimal(12, 2)
+  pdfUrl        String?  @map("pdf_url") @db.VarChar(500)
+  issuedAt      DateTime @default(now()) @map("issued_at")
+  dueDate       DateTime? @map("due_date") @db.Date
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("invoices")
+}
+
+// ───────────────────────────────────────────────
+// 12) Stock Logs
+// ───────────────────────────────────────────────
+enum StockLogType {
+  in
+  out
+}
+
+enum StockLogReason {
+  order
+  restock
+  manual
+  return_stock @map("return")
+  adjustment
+}
+
+model StockLog {
+  id          Int            @id @default(autoincrement())
+  productId   Int            @map("product_id")
+  type        StockLogType
+  quantity    Int
+  reason      StockLogReason @default(manual)
+  referenceId Int?           @map("reference_id")
+  note        String?        @db.VarChar(500)
+  createdBy   Int?           @map("created_by")
+  createdAt   DateTime       @default(now()) @map("created_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  creator User?   @relation("StockLogCreator", fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([type])
+  @@map("stock_logs")
+}
+
+// ───────────────────────────────────────────────
+// 13) Pricing Rules
+// ───────────────────────────────────────────────
+model PricingRule {
+  id              Int      @id @default(autoincrement())
+  productId       Int      @map("product_id")
+  customerGroupId Int?     @map("customer_group_id")
+  minQty          Int      @map("min_qty")
+  maxQty          Int?     @map("max_qty")
+  price           Decimal  @db.Decimal(10, 2)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  customerGroup CustomerGroup? @relation(fields: [customerGroupId], references: [id], onDelete: Cascade)
+
+  @@map("pricing_rules")
+}
+
+// ───────────────────────────────────────────────
+// 14) Coupons
+// ───────────────────────────────────────────────
+enum CouponType {
+  percentage
+  fixed
+}
+
+model Coupon {
+  id            Int        @id @default(autoincrement())
+  code          String     @unique @db.VarChar(50)
+  type          CouponType @default(percentage)
+  value         Decimal    @db.Decimal(10, 2)
+  minOrderValue Decimal?   @map("min_order_value") @db.Decimal(10, 2)
+  maxUses       Int?       @map("max_uses")
+  usedCount     Int        @default(0) @map("used_count")
+  isActive      Boolean    @default(true) @map("is_active")
+  expiresAt     DateTime?  @map("expires_at")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  @@map("coupons")
+}
+
+// ───────────────────────────────────────────────
+// 15) Suppliers
+// ───────────────────────────────────────────────
+model Supplier {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(150)
+  email        String?  @db.VarChar(191)
+  phone        String?  @db.VarChar(20)
+  company      String?  @db.VarChar(150)
+  address      String?  @db.VarChar(500)
+  city         String?  @db.VarChar(100)
+  country      String?  @db.VarChar(60)
+  paymentTerms String?  @map("payment_terms") @db.VarChar(100)
+  status       String   @default("active") @db.VarChar(20)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  purchaseOrders PurchaseOrder[]
+
+  @@map("suppliers")
+}
+
+// ───────────────────────────────────────────────
+// 16) Purchase Orders
+// ───────────────────────────────────────────────
+model PurchaseOrder {
+  id           Int      @id @default(autoincrement())
+  supplierId   Int      @map("supplier_id")
+  poNumber     String   @unique @map("po_number") @db.VarChar(30)
+  status       String   @default("draft") @db.VarChar(20)
+  subtotal     Decimal  @default(0) @db.Decimal(12, 2)
+  taxAmount    Decimal  @default(0) @map("tax_amount") @db.Decimal(10, 2)
+  shippingCost Decimal  @default(0) @map("shipping_cost") @db.Decimal(10, 2)
+  totalAmount  Decimal  @default(0) @map("total_amount") @db.Decimal(12, 2)
+  notes        String?  @db.Text
+  expectedAt   DateTime? @map("expected_at")
+  receivedAt   DateTime? @map("received_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  supplier Supplier            @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  items    PurchaseOrderItem[]
+
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id               Int     @id @default(autoincrement())
+  purchaseOrderId  Int     @map("purchase_order_id")
+  productName      String  @map("product_name") @db.VarChar(200)
+  sku              String? @db.VarChar(50)
+  quantity         Int
+  unitPrice        Decimal @map("unit_price") @db.Decimal(10, 2)
+  receivedQuantity Int     @default(0) @map("received_quantity")
+  subtotal         Decimal @db.Decimal(12, 2)
+
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+
+  @@map("purchase_order_items")
+}
+
+// ───────────────────────────────────────────────
+// 17) Notifications
+// ───────────────────────────────────────────────
+model Notification {
+  id        Int      @id @default(autoincrement())
+  type      String   @db.VarChar(50)
+  title     String   @db.VarChar(200)
+  message   String   @db.Text
+  data      Json?
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([isRead])
+  @@map("notifications")
+}
+
+// ───────────────────────────────────────────────
+// 18) Activity Logs
+// ───────────────────────────────────────────────
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?     @map("user_id")
+  module    String   @db.VarChar(50)
+  action    String   @db.VarChar(100)
+  detail    String?  @db.Text
+  ipAddress String?  @map("ip_address") @db.VarChar(45)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([module])
+  @@map("activity_logs")
+}
+
+// ───────────────────────────────────────────────
+// 19) Settings (key-value store)
+// ───────────────────────────────────────────────
+model Setting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique @db.VarChar(100)
+  value String @db.Text
+
+  @@map("settings")
+}
+
+// ───────────────────────────────────────────────
+// 20) Roles & Permissions (RBAC)
+// ───────────────────────────────────────────────
+model Role {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(50)
+  description String?  @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  permissions RolePermission[]
+  adminUsers  AdminUserRole[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+  module      String   @db.VarChar(50)
+  description String?  @db.VarChar(255)
+
+  roles RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       Int @map("role_id")
+  permissionId Int @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model AdminUserRole {
+  userId Int @map("user_id")
+  roleId Int @map("role_id")
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("admin_user_roles")
+}

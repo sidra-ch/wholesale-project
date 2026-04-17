@@ -24,19 +24,19 @@ interface InventoryRow {
   name: string;
   sku: string;
   stock: number;
-  low_stock_threshold: number;
+  lowStockThreshold: number;
   unit: string;
   category?: { id: number; name: string };
 }
 
 interface StockLog {
   id: number;
-  product_id: number;
+  productId: number;
   type: "in" | "out";
   quantity: number;
   reason: string;
   note?: string;
-  created_at: string;
+  createdAt: string;
   product?: { name: string; sku: string };
   creator?: { name: string };
 }
@@ -72,12 +72,12 @@ export default function AdminInventoryPage() {
     try {
       const data = await fetchInventory({
         search: search || undefined,
-        stock_status: stockFilter || undefined,
+        stockStatus: stockFilter || undefined,
         page,
-        per_page: 20,
+        perPage: 20,
       });
       setProducts(data.data || []);
-      setLastPage(data.last_page || 1);
+      setLastPage(data.lastPage || data.last_page || 1);
       setTotal(data.total || 0);
     } catch {
       toast("Failed to load inventory", "error");
@@ -88,9 +88,9 @@ export default function AdminInventoryPage() {
   const loadLogs = useCallback(async () => {
     setLogsLoading(true);
     try {
-      const data = await fetchStockLogs({ page: logsPage, per_page: 20 });
+      const data = await fetchStockLogs({ page: logsPage, perPage: 20 });
       setLogs(data.data || []);
-      setLogsLastPage(data.last_page || 1);
+      setLogsLastPage(data.lastPage || data.last_page || 1);
     } catch {
       toast("Failed to load stock logs", "error");
     }
@@ -129,7 +129,7 @@ export default function AdminInventoryPage() {
   const getStockBadge = (row: InventoryRow) => {
     if (row.stock <= 0)
       return { label: "Out of Stock", cls: "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400" };
-    if (row.stock <= row.low_stock_threshold)
+    if (row.stock <= row.lowStockThreshold)
       return { label: "Low Stock", cls: "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400" };
     return { label: "In Stock", cls: "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400" };
   };
@@ -229,7 +229,7 @@ export default function AdminInventoryPage() {
               <div>
                 <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Low Stock</p>
                 <p className="text-xl font-bold text-amber-600 dark:text-amber-400">
-                  {products.filter((p) => p.stock > 0 && p.stock <= p.low_stock_threshold).length}
+                  {products.filter((p) => p.stock > 0 && p.stock <= p.lowStockThreshold).length}
                 </p>
               </div>
             </div>
@@ -277,7 +277,7 @@ export default function AdminInventoryPage() {
                           <td className="py-3 px-4 text-center font-bold text-gray-900 dark:text-white">
                             {row.stock} <span className="text-xs font-normal text-gray-400">{row.unit}</span>
                           </td>
-                          <td className="py-3 px-4 text-center text-gray-500 dark:text-gray-400">{row.low_stock_threshold}</td>
+                          <td className="py-3 px-4 text-center text-gray-500 dark:text-gray-400">{row.lowStockThreshold}</td>
                           <td className="py-3 px-4 text-center">
                             <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${badge.cls}`}>
                               {badge.label}
@@ -358,7 +358,7 @@ export default function AdminInventoryPage() {
                       <td className="py-3 px-4 text-gray-500 dark:text-gray-400 capitalize">{log.reason}</td>
                       <td className="py-3 px-4 text-gray-500 dark:text-gray-400 text-xs">{log.note || "—"}</td>
                       <td className="py-3 px-4 text-gray-500 dark:text-gray-400">{log.creator?.name || "System"}</td>
-                      <td className="py-3 px-4 text-gray-400 text-xs">{new Date(log.created_at).toLocaleString()}</td>
+                      <td className="py-3 px-4 text-gray-400 text-xs">{new Date(log.createdAt).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -21,12 +21,12 @@ import {
 
 interface LogEntry {
   id: number;
-  user_id?: number;
+  userId?: number;
   module: string;
   action: string;
   description: string;
-  ip_address?: string;
-  created_at: string;
+  ipAddress?: string;
+  createdAt: string;
   user?: { name: string; email: string };
 }
 
@@ -76,10 +76,10 @@ export default function AdminActivityLogsPage() {
         search: search || undefined,
         module: moduleFilter || undefined,
         page,
-        per_page: 20,
+        perPage: 20,
       });
       setLogs(data.data || []);
-      setLastPage(data.last_page || 1);
+      setLastPage(data.lastPage || data.last_page || 1);
       setTotal(data.total || 0);
     } catch {
       toast("Failed to load activity logs", "error");
@@ -173,10 +173,10 @@ export default function AdminActivityLogsPage() {
                         </span>
                       )}
                       <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />{new Date(log.created_at).toLocaleString()}
+                        <Clock className="h-3 w-3" />{new Date(log.createdAt).toLocaleString()}
                       </span>
-                      {log.ip_address && (
-                        <span className="font-mono">{log.ip_address}</span>
+                      {log.ipAddress && (
+                        <span className="font-mono">{log.ipAddress}</span>
                       )}
                     </div>
                   </div>

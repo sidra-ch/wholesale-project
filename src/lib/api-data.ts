@@ -10,18 +10,18 @@ const PLACEHOLDER_IMAGE = "/images/placeholder.svg";
 function mapApiProduct(p: ApiProduct): Product {
   const images =
     p.images && p.images.length > 0
-      ? p.images.map((img) => img.image_url)
+      ? p.images.map((img) => img.imageUrl)
       : [PLACEHOLDER_IMAGE];
 
-  const wholesale = parseFloat(p.wholesale_price);
-  const retail = parseFloat(p.retail_price);
-  const distributor = parseFloat(p.distributor_price);
+  const wholesale = parseFloat(p.wholesalePrice);
+  const retail = parseFloat(p.retailPrice);
+  const distributor = parseFloat(p.distributorPrice);
 
   return {
     id: String(p.id),
     name: p.name,
     slug: p.slug,
-    description: p.description || p.short_description || "",
+    description: p.description || p.shortDescription || "",
     price: wholesale,
     comparePrice: retail > wholesale ? retail : undefined,
     retailPrice: retail,
@@ -32,7 +32,7 @@ function mapApiProduct(p: ApiProduct): Product {
     moq: p.moq,
     stock: p.stock,
     unit: p.unit,
-    featured: p.is_featured,
+    featured: p.isFeatured,
   };
 }
 
@@ -61,12 +61,11 @@ export async function fetchProducts(params?: {
   sort?: string;
   order?: string;
   page?: number;
-  per_page?: number;
+  perPage?: number;
 }): Promise<{ products: Product[]; total: number }> {
   try {
     const res = await api.get("/products", { params });
     const data = res.data;
-    // Laravel paginate returns { data: [...], total, ... }
     const items: ApiProduct[] = data.data || data;
     return {
       products: items.map(mapApiProduct),
@@ -120,7 +119,7 @@ export async function fetchCategories(): Promise<Category[]> {
     const res = await api.get("/categories");
     const items: ApiCategory[] = res.data.categories || res.data;
     // Only return main categories (no subcategories)
-    return items.filter((c) => !c.parent_id).map(mapApiCategory);
+    return items.filter((c) => !c.parentId).map(mapApiCategory);
   } catch {
     return staticCategories;
   }

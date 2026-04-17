@@ -61,7 +61,9 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     set({ permissions, roles });
   },
   hasPermission: (permission) => {
-    const { roles, permissions } = get();
+    const { user, roles, permissions } = get();
+    // Admin users get full access regardless of RBAC roles
+    if (user?.role === "admin") return true;
     if (roles.includes("super-admin")) return true;
     return permissions.includes(permission);
   },

@@ -69,8 +69,8 @@ export default function AdminSettingsPage() {
     }
     setSaving(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://arslanwholesale.alwaysdata.net/api";
-      const token = localStorage.getItem("auth_token");
+      const apiUrl = "/api";
+      const token = localStorage.getItem("token");
       const res = await fetch(`${apiUrl}/user/password`, {
         method: "PUT",
         headers: {

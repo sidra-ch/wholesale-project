@@ -25,33 +25,32 @@ import {
 
 interface SalesData {
   date: string;
-  total_orders: number;
-  total_revenue: number;
-  total_items: number;
+  totalOrders: number;
+  totalRevenue: number;
 }
 
 interface ProductData {
   id: number;
   name: string;
   sku: string;
-  total_sold: number;
-  total_revenue: number;
+  totalSold: number;
+  totalRevenue: number;
 }
 
 interface CategoryData {
   id: number;
   name: string;
-  total_products: number;
-  total_sold: number;
-  total_revenue: number;
+  totalOrders: number;
+  totalSold: number;
+  totalRevenue: number;
 }
 
 interface CustomerData {
   id: number;
   name: string;
   email: string;
-  total_orders: number;
-  total_spent: number;
+  totalOrders: number;
+  totalSpent: number;
 }
 
 type Tab = "sales" | "products" | "categories" | "customers";
@@ -121,12 +120,11 @@ export default function AdminReportsPage() {
   };
 
   // Calculate totals for sales
-  const totalRevenue = salesData.reduce((s, d) => s + d.total_revenue, 0);
-  const totalOrders = salesData.reduce((s, d) => s + d.total_orders, 0);
-  const totalItems = salesData.reduce((s, d) => s + d.total_items, 0);
+  const totalRevenue = salesData.reduce((s, d) => s + d.totalRevenue, 0);
+  const totalOrders = salesData.reduce((s, d) => s + d.totalOrders, 0);
   const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-  const maxRevenue = Math.max(...salesData.map((d) => d.total_revenue), 1);
+  const maxRevenue = Math.max(...salesData.map((d) => d.totalRevenue), 1);
 
   const tabs: { value: Tab; label: string; icon: React.ElementType }[] = [
     { value: "sales", label: "Sales", icon: TrendingUp },
@@ -205,7 +203,6 @@ export default function AdminReportsPage() {
                 {[
                   { label: "Total Revenue", value: `Rs ${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "from-[#3B82F6] to-[#6366F1]" },
                   { label: "Total Orders", value: totalOrders.toLocaleString(), icon: BarChart3, color: "from-[#10B981] to-[#059669]" },
-                  { label: "Items Sold", value: totalItems.toLocaleString(), icon: Package, color: "from-[#F59E0B] to-[#D97706]" },
                   { label: "Avg Order Value", value: `Rs ${avgOrderValue.toFixed(2)}`, icon: ArrowUpRight, color: "from-[#8B5CF6] to-[#7C3AED]" },
                 ].map((kpi) => (
                   <div key={kpi.label} className="bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.06] rounded-2xl p-5">
@@ -235,14 +232,14 @@ export default function AdminReportsPage() {
                         <div className="flex-1 h-7 bg-gray-100 dark:bg-white/[0.04] rounded-lg overflow-hidden">
                           <div
                             className="h-full bg-gradient-to-r from-[#3B82F6] to-[#6366F1] rounded-lg flex items-center px-2"
-                            style={{ width: `${Math.max((d.total_revenue / maxRevenue) * 100, 2)}%` }}
+                            style={{ width: `${Math.max((d.totalRevenue / maxRevenue) * 100, 2)}%` }}
                           >
                             <span className="text-[10px] font-medium text-white whitespace-nowrap">
-                              ${d.total_revenue.toLocaleString()}
+                              ${d.totalRevenue.toLocaleString()}
                             </span>
                           </div>
                         </div>
-                        <span className="text-xs text-gray-400 w-16 text-right">{d.total_orders} orders</span>
+                        <span className="text-xs text-gray-400 w-16 text-right">{d.totalOrders} orders</span>
                       </div>
                     ))}
                   </div>
@@ -274,8 +271,8 @@ export default function AdminReportsPage() {
                           <td className="py-3 px-4 text-gray-400">{i + 1}</td>
                           <td className="py-3 px-4 font-semibold text-gray-900 dark:text-white">{p.name}</td>
                           <td className="py-3 px-4 text-gray-500 dark:text-gray-400 font-mono text-xs">{p.sku}</td>
-                          <td className="py-3 px-4 text-right font-medium text-gray-900 dark:text-white">{p.total_sold.toLocaleString()}</td>
-                          <td className="py-3 px-4 text-right font-bold text-green-600 dark:text-green-400">${p.total_revenue.toLocaleString()}</td>
+                          <td className="py-3 px-4 text-right font-medium text-gray-900 dark:text-white">{p.totalSold.toLocaleString()}</td>
+                          <td className="py-3 px-4 text-right font-bold text-green-600 dark:text-green-400">${p.totalRevenue.toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -296,7 +293,7 @@ export default function AdminReportsPage() {
                     <thead>
                       <tr className="bg-gray-50/80 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/[0.06]">
                         <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">Category</th>
-                        <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">Products</th>
+                        <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">Orders</th>
                         <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">Units Sold</th>
                         <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">Revenue</th>
                       </tr>
@@ -305,9 +302,9 @@ export default function AdminReportsPage() {
                       {categoryData.map((c) => (
                         <tr key={c.id} className="border-b border-gray-50 dark:border-white/[0.04] hover:bg-gray-50/50 dark:hover:bg-white/[0.03] transition-colors">
                           <td className="py-3 px-4 font-semibold text-gray-900 dark:text-white">{c.name}</td>
-                          <td className="py-3 px-4 text-right text-gray-500 dark:text-gray-400">{c.total_products}</td>
-                          <td className="py-3 px-4 text-right font-medium text-gray-900 dark:text-white">{c.total_sold.toLocaleString()}</td>
-                          <td className="py-3 px-4 text-right font-bold text-green-600 dark:text-green-400">${c.total_revenue.toLocaleString()}</td>
+                          <td className="py-3 px-4 text-right text-gray-500 dark:text-gray-400">{c.totalOrders}</td>
+                          <td className="py-3 px-4 text-right font-medium text-gray-900 dark:text-white">{c.totalSold.toLocaleString()}</td>
+                          <td className="py-3 px-4 text-right font-bold text-green-600 dark:text-green-400">${c.totalRevenue.toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -340,8 +337,8 @@ export default function AdminReportsPage() {
                           <td className="py-3 px-4 text-gray-400">{i + 1}</td>
                           <td className="py-3 px-4 font-semibold text-gray-900 dark:text-white">{c.name}</td>
                           <td className="py-3 px-4 text-gray-500 dark:text-gray-400 text-xs">{c.email}</td>
-                          <td className="py-3 px-4 text-right font-medium text-gray-900 dark:text-white">{c.total_orders}</td>
-                          <td className="py-3 px-4 text-right font-bold text-green-600 dark:text-green-400">${c.total_spent.toLocaleString()}</td>
+                          <td className="py-3 px-4 text-right font-medium text-gray-900 dark:text-white">{c.totalOrders}</td>
+                          <td className="py-3 px-4 text-right font-bold text-green-600 dark:text-green-400">${c.totalSpent.toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>
